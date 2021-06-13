@@ -103,9 +103,9 @@ Veamos ejemplos de creciente dificultad en los que podemos aplicar el algoritmo:
 
 `int x[3][5]` - «Declaración de un array de 3 elementos array de 5 elementos int.»
 
-`int x[5]` - «Declaración de un array de 5 elementos apuntador a int.»
+`int *x[5]` - «Declaración de un array de 5 elementos apuntador a int.»
 
-`int x[3][5]` - «Declaración de un array de 3 elementos array de 5 elementos apuntador a int.»
+`int *x[3][5]` - «Declaración de un array de 3 elementos array de 5 elementos apuntador a int.»
 
 `int (*[4])[3][5]` - «Declaración de un array de 4 elementos apuntador a array de 3 elementos array de 5 elementos int.»
 
