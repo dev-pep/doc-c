@@ -18,6 +18,10 @@ Otros:
 
 - [Compilador GCC](capitulos/gcc.md)
 
+## Bibliografía
+
+- [N2176](n2176.pdf), último borrador antes de la aprobación del estándar.
+
 ---
 
 [![CC BY 4.0][cc-by-shield]][cc-by]
