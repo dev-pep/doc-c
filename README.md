@@ -17,6 +17,7 @@ Biblioteca estándar:
 Otros:
 
 - [Compilador GCC](capitulos/gcc.md)
+- *API C* de *Python* (*próximamente*)
 
 ## Bibliografía
 
