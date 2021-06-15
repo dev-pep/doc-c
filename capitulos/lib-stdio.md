@@ -119,11 +119,11 @@ La *format string* será una secuencia de caracteres *multibyte*, iniciando y ac
 
 1. Caracteres *multibyte* ordinarios excepto '***%***'. Aquí incluimos todo tipo de caracteres, que se transcriben literalmente.
 2. Especificación de conversión: carácter '***%***' seguido de (por este orden):
-  - Cero o más *flags* (en cualquier orden).
-  - Anchura mínima del campo (opcional). Consiste en un asterisco (***\****) o un entero positivo que no empiece por ***0*** (porque ***0*** se interpretaría como un *flag*). Si el valor a convertir tiene menos anchura, se añaden espacios de relleno, a la izquierda por defecto.
-  - Precisión (opcional). Consiste en un punto '***.***' seguido por un asterisco '***\****' o por un entero decimal; si solo se especifica el punto, se toma como precisión cero. Especifica el mínimo número de dígitos que aparecerán en la conversión para los tipos ***diouxX***, el número de dígitos después del punto decimal en los tipos ***aAeEfF***, el número máximo de dígitos significantes para los tipos ***gG***, o el máximo número de *bytes* escritos para el tipo ***s***.
-  - Modificador de longitud (opcional).
-  - Especificador de conversión concreta.
+    - Cero o más *flags* (en cualquier orden).
+    - Anchura mínima del campo (opcional). Consiste en un asterisco (***\****) o un entero positivo que no empiece por ***0*** (porque ***0*** se interpretaría como un *flag*). Si el valor a convertir tiene menos anchura, se añaden espacios de relleno, a la izquierda por defecto.
+    - Precisión (opcional). Consiste en un punto '***.***' seguido por un asterisco '***\****' o por un entero decimal; si solo se especifica el punto, se toma como precisión cero. Especifica el mínimo número de dígitos que aparecerán en la conversión para los tipos ***diouxX***, el número de dígitos después del punto decimal en los tipos ***aAeEfF***, el número máximo de dígitos significantes para los tipos ***gG***, o el máximo número de *bytes* escritos para el tipo ***s***.
+    - Modificador de longitud (opcional).
+    - Especificador de conversión concreta.
 
 En el caso del uso de '***\****' (anchura y precisión), indicamos que el valor de esa anchura o precisión viene dada en un argumento, que deberá ser `int`, y que irá antes del argumento a convertir; en caso de aparecer ambos campos como argumento, el que indica anchura va antes del que indica precisión; un argumento de anchura negativo se toma como un *flag* '***-***' seguido de una anchura positiva; un argumento de precisión negativo se toma como si no estuviera especificada la precisión.
 
