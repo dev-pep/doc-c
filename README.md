@@ -17,9 +17,9 @@ Biblioteca estándar:
 Otros:
 
 - [Compilador GCC](capitulos/gcc.md)
+- Creación de extensiones de *Python* (*próximamente*)
 - Depurador *GDB* (*próximamente*)
-- Construir con *make* (*próximamente*)
-- *API C* de *Python* (*próximamente*)
+- Construcción con *make* (*próximamente*)
 
 ## Bibliografía
 
