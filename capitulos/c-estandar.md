@@ -40,11 +40,11 @@ El texto del programa reside en los archivos fuente. Una vez se ha ejecutado el 
 
 Las fases de la traducción sobre un archivo fuente son (en este orden):
 
-1. Los caracteres *multibyte* de los archivos fuente, se mapean al juego de caracteres fuente (*source character set*). Los archivos fuente solo pueden contener caracteres pertenecientes a dicho *source character set* (independientemente de su codificación en el archivo fuente: *UTF-8*, *ISO-8859*, etc.). La implementación concreta define cómo se mapean estos caracteres. Se sustituyen los *trigraphs*.
+1. Los caracteres *multibyte* de los archivos fuente se mapean al juego de caracteres fuente (*source character set*) de una forma *implementation-defined* (la codificación del juego de caracteres en memoria interna, sin embargo, es irrelevante para el desarollador). La codificación interna es independiente de su codificación en el archivo fuente: *UTF-8*, *ISO-8859*, etc. Los archivos fuente solo pueden contener caracteres pertenecientes al *source character set* de la implementación. Se sustituyen los *trigraphs*.
 2. Las secuencias de barra invertida (***\\***) + *newline* se eliminan, juntando así varias líneas lógicas. El archivo fuente debe terminar en *newline* (no precedido de ***\\***).
 3. Los comentarios se sustituyen por *un espacio*. Se descompone el archivo fuente en *preprocessing tokens* y espacios (agrupándose en un solo espacio o no). Se mantienen los *newlines*.
 4. Se ejecutan las directivas del preprocesador, se expanden macros y se ejecuta el operador `_Pragma`. Se insertan los archivos `#include` y se aplican todos estos pasos desde el principio en cada uno de estos, recursivamente.
-5. **Dentro de las constantes carácter y literales *string***, cada carácter del juego fuente y cada secuencia escape se mapean al carácter correspondiente del juego de caracteres de ejecución.
+5. **Dentro de las constantes carácter y literales *string***, cada carácter del juego fuente y cada secuencia escape se mapean al carácter correspondiente del juego de caracteres de ejecución. La codificación del *execution character set* sí puede ser relevante para el desarrollador al acceder a las constantes carácter *multibyte* y literales *string multibyte*.
 6. Se concatenan literales *string* adyacentes.
 7. Los *preprocessing tokens* se convierten en *tokens*, y se desecha todo el espacio en blanco (incluyendo *newlines*, espacios,...). Esto forma la *translation unit*.
 8. Se resuelven todas las referencias externas (bibliotecas, funciones externas, etc.).
@@ -83,7 +83,7 @@ Efectos secundarios (*side effects*) son acceder a un objeto volátil, modificar
 
 Una evaluación está secuenciada después de otra dentro del mismo hilo (*thread*) si hay un *sequence point* entre ellas. Si no, el orden relativo no está especificado. Si una evaluación ***A*** está secuenciada antes que una evaluación ***B***, entonces todo cálculo de resultado y todo *side effect* de ***A*** ocurre antes que todo cálculo de resultado y todo *side effect* de ***B*** (para ver lista de *sequence points*, ver el **anexo C**).
 
-La implementación no está obligada a evaluar una parte de una expresión si deduce que su valor no será usado y no produce *side effects* (cortocircuito).
+La implementación no está obligada a evaluar una parte de una expresión si deduce que su valor no será usado (cortocircuito).
 
 ##### 5.1.2.4 Multi-threaded executions and data races
 
@@ -97,11 +97,9 @@ En la biblioteca estándar existen mecanismos que evitan estos conflictos en cas
 
 #### 5.2.1 Character sets
 
-El conjunto de caracteres fuente (*source character set*) es el conjunto de caracteres con que son escritos los archivos de código fuente, que en el archivo fuente tendrán una codificación concreta (por defecto *UTF-8*), y una vez procesados tendrán una codificación interna que usará el compilador. Por otro lado, el conjunto de datos de ejecución (*execution character set*) son los caracteres interpretados en el entorno de ejecución. Cada carácter fuente se mapea a un carácter del entorno de ejecución.
+El conjunto de caracteres fuente (*source character set*) es el conjunto de caracteres que admite la implementación, y que están escritos en los archivos de código fuente, en los que están codificados según cada archivo define. A partir de estos archivos fuente, el compilador crea la correspondiente *translation unit*, compuesta por *tokens*, entre los que encontramos los diversos literales *string* y constantes carácter. Esto ya corresponde al *execution character set*, y su codificación la decide el propio compilador, aunque se puede forzar una codificación concreta de este juego de ejecución estableciendo las opciones pertinentes del compilador; incluso se puede forzar la codificación *UTF-8* mediante los literales *string* de tipo `u8`, como se verá más adelante.
 
-Lo que hace, pues, un compilador en la fase de preprocesado, es descodificar el juego de caracteres del archivo fuente al *source character set* disponible en esa implementación (debería cumplir con el estándar *Unicode* para poder ofrecer todos los caracteres existentes). La traducción del *source character set* al *execution character set* se hace en el momento de la ejecución del programa.
-
-Cada conjunto está compuesto del conjunto básico (del que trataremos ahora) y un conjunto (opcional) compuesto por caracteres específicos de un *locale* concreto, soportado por una implementación concreta. La suma de ambos subconjuntos se denomina conjunto de caracteres extendido (*extended source character set* y *extended execution character set*).
+Cada conjunto de caracteres (fuente y ejecución) está compuesto del conjunto básico (del que trataremos ahora) y un conjunto (opcional) compuesto por caracteres específicos de un *locale* concreto, soportado por una implementación concreta. La suma de ambos subconjuntos se denomina conjunto de caracteres extendido (*extended source character set* y *extended execution character set*).
 
 Conjunto básico de caracteres fuente:
 
@@ -178,7 +176,7 @@ Un identificador declarado en distintos *scopes*, o en el mismo *scope* más de 
 
 Los identificadores (de objeto o función) con *file scope* declarados con el *storage-class specifier* `static`, tienen ***linkage* interno**.
 
-Un identificador declarado como `extern` en un *scope* donde hay una declaración visible del mismo identificador (anteriormente en el mismo *scope* o en un *enclosing scope*), y esa declaración indica *linkage* interno o externo, la declaración tardía adquiere **ese mismo *linkage***. En cambio, si no hay otra declaración visible o la que hay no tiene *linkage*, la declaración tendrá ***linkage* externo**.
+Un identificador declarado como `extern` en un *scope* donde hay una declaración visible del mismo identificador (anteriormente en el mismo *scope* o en un *enclosing scope*), y esa declaración indica *linkage* interno o externo, la declaración tardía adquiere **ese mismo *linkage***. En cambio, si no hay otra declaración visible o la que hay no tiene indicación de *linkage*, la declaración tendrá ***linkage* externo**.
 
 Si la declaración de un identificador de **función** no tiene *storage-class specifier*, su *linkage* se determina **como si tuviera el *storage-class specifier*** `extern`. Si la declaración de un identificador de **objeto con *file scope*** no tiene *storage-class specifier*, tiene ***linkage* externo** directamente.
 
@@ -189,10 +187,12 @@ Veamos una tabla resumen:
 | *Scope:* | *File*   | *File*      | *File*      | *Block*     | *Block*       |
 | :------- | :------- | :---------- | :---------- | :---------- | :------------ |
 |          | `static` | `extern`    | ∅           | `extern`    | ∅             |
-| Función  | Interno  | Externo (?) | Externo (?) | n/a         | n/a           |
+| Función  | Interno  | Externo (?) | Externo (?) | Externo (?) | Externo (?)   |
 | Objeto   | Interno  | Externo (?) | Externo     | Externo (?) | Sin *linkage* |
 
 **Externo (?)** significa que es *linkage* externo siempre y cuando no haya una declaración visible anterior con *linkage* interno, en cuyo caso, será interno.
+
+Dentro de *block scope*, `static` no define *linkage*, sino *storage duration*, con lo que no se puede usar en la declaración con *block scope* de una función. Como veremos, no se pueden definir funciones en *block scope*, pero sí declararlas.
 
 Si un identificador queda definido dentro del mismo *scope* con *linkage* tanto interno como externo, el comportamiento es indefinido.
 
@@ -520,7 +520,7 @@ Una constante de una enumeración tiene tipo `int`.
 
 ##### 6.4.4.4 Character constants
 
-Un carácter puede ser *multibyte* o *wide*. Lo de 1 caracter 1 `char` es un concepto antiguo, ya que es improbable que el juego de ejecución completo esté codificado mediante un *byte* por miembro. Aunque en el compilador *GCC*, por ejemplo, se puede definir el juego de caracteres de ejecución, con su codificación pertinente, no es práctica habitual especificar un juego de caracteres de esas características. Sin embargo, así será si solo utilizamos los 128 caracteres *ASCII*.
+Un carácter puede ser *multibyte* o *wide*. Lo de 1 caracter 1 `char` es un concepto antiguo, ya que es improbable que el juego de ejecución completo esté codificado mediante un *byte* por miembro. Aunque en el compilador *GCC*, por ejemplo, permite especificar explícitamente una codificación para el juego de caracteres de ejecución, no es práctica habitual especificar un juego de caracteres de esas características. Sin embargo, podríamos usarlo si solo utilizamos los 128 caracteres *ASCII* (y opcionalmente una codificación extendida de *ASCII* con 256 caracteres en total).
 
 Una constante carácter (en el archivo fuente) está compuesta por una secuencia de uno (o más, si lo permite la implementación) caracteres *multibyte* (por su codificación en el archivo) entre comillas simples. Un carácter *wide* es lo mismo, pero con un prefijo ***L***, ***u*** o ***U***:
 
@@ -559,13 +559,13 @@ Los mismos principios de las constantes carácter en cuanto a formato valen para
 
 Los *strings* adyacentes con idéntico prefijo se concatenan durante el preproceso. Una serie de *strings* adyacentes en los que uno o más tienen un prefijo concreto (siempre el mismo) y los demás no tienen prefijo, se consideran todos con ese prefijo. No se puede concatenar de este modo *strings multibyte* con *strings wide*, con lo que no puede haber una secuencia con *strings wide* y *strings UTF-8*. En el caso de que existan prefijos *wide* distintos en los *strings*, la implementación decidirá qué hacer.
 
-Durante el preproceso también se añade al final de los literales *string* un *byte* o código *wide* de valor ***0***, y la secuencia resultante se usa para inicializar un *array* de *static storage duration* con la longitud justa par a contener la secuencia. No se deben cambiar esas posiciones de memoria. Los literales *string* sin prefijo o *UTF-8* formarán secuencias `char` *multibyte* con la codificación correspondiente. Para literales *wide*, serán secuencias del tipo indicado por el prefijo.
+Durante el preproceso también se añade al final de los literales *string* un *byte* o código *wide* de valor ***0***, y la secuencia resultante se usa para inicializar un *array* de *static storage duration* con la longitud justa para contener la secuencia. No se debe modificar el contenido de esas posiciones de memoria. Los literales *string* sin prefijo o *UTF-8* formarán secuencias `char` *multibyte* con la codificación correspondiente. Para literales *wide*, serán secuencias del tipo indicado por el prefijo.
 
 #### 6.4.6 Punctuators
 
 Operadores y *tokens* de preproceso. Se incluyen los *digraphs*, que equivalen al puntuador indicado:
 
-`<:` (***[***), `:>` (***]***), `<%` (***{***), `%>` (***}***), `%:` (***#***) y `%:%:` (***##***).
+`<:` (***\[***), `:>` (***\]***), `<%` (***{***), `%>` (***}***), `%:` (***#***) y `%:%:` (***##***).
 
 #### 6.4.8 Preprocessing numbers
 
@@ -573,7 +573,7 @@ Números utilizados en el preproceso. Sintácticamente empieza por dígito, opci
 
 #### 6.4.9 Comments
 
-Pueden contener *multibyte* chars.
+Pueden contener caracteres *multibyte*.
 
 Se abre con `/*`, hasta `*/`. No anidable.
 
@@ -628,7 +628,7 @@ Es útil para simular la sobrecarga de funciones. Podríamos definir una macro `
     float: cbrtf)(X)
 ```
 
-Solo puede haber 1 tipo por defecto. Los tipos de la lista deben ser completos, y no pueden ser *arrays* de longitud variable o derivados de estos. No puede haber tipos compatibles entre los especificados.
+Solo puede haber 1 tipo por defecto. Los tipos de la lista deben ser completos, y no pueden ser tipos variablemente modificados o derivados de estos. No puede haber tipos compatibles entre los especificados.
 
 Si la expresión retornada es un *lvalue*, un designador de función o una expresión `void`, también lo será el resultado, y actuará como tal. El tipo de la expresión del argumento será, cuando proceda, como si se aplicara una conversión *lvalue*, o *array* a apuntador, o función a apuntador. El tipo de la expresión indicada no puede ser compatible con más de uno de los tipos; y si no existe elemento `default`, debe serlo con exactamente uno de ellos.
 
@@ -668,7 +668,7 @@ Se usa operador `.` (`objeto.miembro`) para acceder a los miembros de un objeto 
 
 Si el primer operando (expresión que denota la estructura o unión) está *qualified*, el resultado (expresión que denota al miembro) queda *qualified* del mismo modo (a parte de otras *qualifications* que ya tuviera el miembro de por sí).
 
-Si el primer operando es un *lvalue*, el resultado es un *lvalue*; en el caso del operador `->`, el resultado es siempre un *lvalue*. Por ejemplo, si la función `foo()` retorna una unión o estructura y `pfoo()` retorna un apuntador a unión o estructura, `foo().member`, aunque es una expresión válida, no es un *lvalue*, pero `pfoo()->.member` sí lo es. Por lo tanto:
+Si el primer operando es un *lvalue*, el resultado es un *lvalue*; en el caso del operador `->`, el resultado es siempre un *lvalue*. Por ejemplo, si la función `foo()` retorna una unión o estructura y `pfoo()` retorna un apuntador a unión o estructura, `foo().member`, aunque es una expresión válida, no es un *lvalue*, pero `pfoo()->member` sí lo es. Por lo tanto:
 
 ```c
 foo().member = valor;  // incorrecto
@@ -769,7 +769,7 @@ Los desplazamientos se rellenan con ceros. Si el primer operando es negativo, el
 
 Son `>` (mayor), `<` (menor), `>=` (mayor o igual) y `<=` (menor o igual). Los operandos deben ser  de tipo real, o apuntadores a tipos compatibles.
 
-Si se comparan apuntadores, el resultado depende de la posición relativa en memoria de los objetos a los que apuntan. Si apuntan al mismo objeto, se comparan igual. Si apuntan a miembros de un mismo objeto estructura, se tendrá en cuenta el orden de dichos miembros dentro del objeto (el último miembro declarado será el que retornará mayor valor). En un *array*, se se sigue el orden según índice. Dentro de los miembros de una unión, todos tienen el mismo orden.
+Si se comparan apuntadores, el resultado depende de la posición relativa en memoria de los objetos a los que apuntan. Si apuntan al mismo objeto, se comparan igual. Si apuntan a miembros de un mismo objeto estructura, se tendrá en cuenta el orden de dichos miembros dentro del objeto (el último miembro declarado será el que retornará mayor valor). En un *array*, se sigue el orden según índice. Dentro de los miembros de una unión, todos tienen el mismo orden.
 
 En caso de que un apuntador apunte a un elemento que no pertenezca a un *array*, se tratará como si estuviese apuntando a un *array* de 1 elemento del tipo indicado por el apuntador.
 
@@ -808,7 +808,7 @@ Operación *OR* bit a bit: (`|`)  Operandos enteros.
 
 #### 6.5.13 Logical AND operator
 
-Operación *AND* lógico (`&&`) entre dos tipos escalares, con resultado de tipo `int` y valor ***0***, si alguno de los operandos tiene valor ***0***, o ***1*** en caso contrario. La evaluación es de izquierda a derecha, con un sequence point entre operandos. Si el primero es ***0***, el segundo ya no se evalúa.
+Operación *AND* lógico (`&&`) entre dos tipos escalares, con resultado de tipo `int` y valor ***0***, si alguno de los operandos tiene valor ***0***, o ***1*** en caso contrario. La evaluación es de izquierda a derecha, con un *sequence point* entre operandos. Si el primero es ***0***, el segundo ya no se evalúa.
 
 #### 6.5.14 Logical OR operator
 
@@ -876,7 +876,7 @@ Una dirección de memoria constante es un apuntador nulo, un apuntador a un *lva
 
 ### 6.7 Declarations
 
-Dejando al margen la *static assert declaration*, una declaración será una combinación de *declaration specifiers* (*storage-class specifiers*, *type specifiers*, *type qualifiers*, *function specifiers* y *alignment specifiers*) seguido de una lista opcional de *declarators* (6.7.6) separada por comas.
+Dejando al margen la *static assert declaration*, una declaración será una combinación de *declaration specifiers* (*storage-class specifiers*, *type specifiers*, *type qualifiers*, *function specifiers* y *alignment specifiers*) seguido de una lista opcional de *declarators* (6.7.6).
 
 Los *declarators*, si existen, contienen el identificador que está siendo declarado, y además pueden contener información adicional del tipo y/o un inicializador.
 
@@ -922,7 +922,7 @@ Sintaxis (igual para estructuras y uniones):
 struct [tag] { /* miembros */ } [variables];
 ```
 
-Si no le damos nombre (*tag*), debemos incluir variable(s), de lo contrario no será usable. A no ser que sea una estructura/unión anónima (ver más abajo).
+Si no le damos nombre (*tag*), debemos incluir variable(s), de lo contrario no será utilizable. A no ser que sea una estructura/unión anónima (ver más abajo).
 
 Para declarar variables posteriormente a la definición de la estructura o unión:
 
@@ -936,9 +936,9 @@ La declaración de miembros se hace igual que en una declaración de objetos, co
 
 Un *bit-field* se indica mediante dos puntos tras el nombre del miembro (***:***), seguido de una expresión entera constante que no puede exceder el ancho del tipo del miembro. Si el valor de esa constante es ***0***, no habrá *declarator* para ese campo (solo tipo, por ejemplo `unsigned int :0`). El tipo del miembro debe ser `_Bool`, `signed int`, `unsigned int`, u otros tipos que la implementación permita.
 
-Una estructura o unión no puede contener miembros de tipo incompleto (por tanto no puede contener miembros del tipo de la propia estructura, aunque sí miembros apuntadores al tipo de la propia estructura), función o *variable length arrays*, a excepción del último miembro: en una estructura con más de un miembro con nombre, el último miembro puede ser un *array* de tipo incompleto; tal estructura (o una unión que contenga, quizá recursivamente, una estructura así) no puede formar parte de una estructura o *array*.
+Una estructura o unión no puede contener miembros de tipo incompleto (por tanto no puede contener miembros del tipo de la propia estructura, aunque sí miembros apuntadores al tipo de la propia estructura) o función, a excepción del último miembro: en una estructura con más de un miembro con nombre, el último miembro puede ser un *array* de tipo incompleto; tal estructura (o una unión que contenga, quizá recursivamente, una estructura así) no puede formar parte de una estructura o *array*.
 
-Un miembro puede ser de cualquier tipo completo, exceptuando tipos de longitud variable (*variable length array*).
+Un miembro puede ser de cualquier tipo completo, exceptuando tipos variablemente modificados).
 
 Si un miembro es un *bit-field* y quedan bits suficientes para albergar un posible *bit-field* inmediatamente posterior, los *bits* de este serán empaquetados consecutivamente dentro del tipo del anterior. Si no cabe el *bit-field* posterior, la implementación decidirá si este empieza después del espacio ocupado por el tipo completo del anterior, o antes de eso, solapándose ambos tipos. No se especifica requisito de alineación en este caso. Para evitar el empaquetado de bits, se debe indicar un *unnamed bit-field* de longitud ***0*** (ver a continuación), de tal modo que no se solaparán los tipos.
 
@@ -1030,6 +1030,8 @@ Son `const`, `restrict`, `volatile` y `_Atomic`.
 
 Las propiedades asociadas a los *qualifiers* solo tienen sentido en expresiones que son *lvalues*.
 
+El *qualifier* `const` crea tipos de solo lectura. No es posible cambiar el valor de una variable de este tipo, más que en su inicialización.
+
 `restrict` se puede incluir solo en apuntadores a tipos de objeto. `_Atomic` no puede incluirse en tipos *array* o función.
 
 Si se intenta modificar un objeto de tipo cualificado con `const` a través de un *lvalue* con tipo no cualificado con `const`, el comportamiento es indefinido, al igual que el acceso a un objeto de tipo cualificado con `volatile` a través de un *lvalue* con tipo no cualificado con `volatile`.
@@ -1038,7 +1040,7 @@ Un objeto que tiene cualificación `volatile` puede ser modificado por mecanismo
 
 Un apuntador cualificado con `restrict` indica que **todos** los accesos realizados al objeto al que referencia este deben ser realizados a través de ese apuntador específico, directa o indirectamente.
 
-Al igual que el *storage class specifier register*, el uso de `restrict` no cambia en absoluto el comportamiento del programa, sino que solo sirve para facilitar ciertas optimizaciones.
+Al igual que el *storage class specifier* `register`, el uso de `restrict` no cambia en absoluto el comportamiento del programa, sino que solo sirve para facilitar ciertas optimizaciones.
 
 Si especificamos un *qualifier* para un *array*, los cualificados serán los elementos, no el *array*. Una función no se puede cualificar.
 
@@ -1094,18 +1096,22 @@ Especifica los requerimientos de alineación del objeto. Es de la forma `_Aligna
 
 `_Alignas(<tipo>)` equivale a `_Alignas(_Alignof(<tipo>))`.
 
-No se puede especificar en `typedef` , *bit-field* o función, o conjuntamente con `register`.
+No se puede especificar en `typedef`, *bit-field* o función, o conjuntamente con `register`.
 
 Si la definición de un objeto tiene este especificador, las declaraciones del mismo deben tenerla igual, o no tenerla. Si no lo tiene, las declaraciones tampoco.
 
 #### 6.7.6 Declarators
 
-Tras la serie de *specifiers* de la declaración (a la que llamaremos `T`), para completar esta, sigue la lista opcional de uno o más *declarators*, separados por comas.
+Veremos aquí el formato de una declaración.
 
-Así, la declaración puede ser simplemente `T` (p.e. `static const int`), refiriéndose a un tipo. O puede ser `T D`; en ese caso, si D no incluye identificador, nos referimos también a un tipo (p.e. `static const int * _Atomic`), y si incluye identificador, estamos declarando un objeto (p.e. `static const int * _Atomic p`). También puede ser del tipo `T D1,D2,...`, en cuyo caso estamos declarando varios objetos:
+Tras la serie de *declaration specifiers* (a la que llamaremos `T`) de la declaración, sigue la lista opcional de uno o más *declarators*, separados por comas. Cada *declarator* declara un identificador, y opcionalmente amplía la información sobre el tipo asociado a ese identificador, en cuanto a tres posibles aspectos: *array*, apuntador o función; o una combinación de las tres cosas, permitiéndose el anidamiento de *declarators* a voluntad (la implementación puede limitar el nivel de anidamiento). En esta composición anidada de tipos complejos, se pueden usar paréntesis para asociar (*bind*) los símbolos adecuadamente en *declarators* complejos.
+
+Un *full declarator* es un *declarator* que no forma parte de ningún otro *declarator*. Si un *full declarator* contiene en su jerarquía de *declarators* uno que defina un tipo *variable length array*, ese *full declarator* define un tipo variablemente modificado (*variably modified*). Cualquier tipo que derive (mediante derivación por *declarators*) de un tipo variablemente modificado, es a su vez un tipo variablemente modificado.
+
+Así, la declaración puede ser simplemente un tipo `T` con todos sus *specifiers* (p.e. `static const int`). O puede ser un tipo más un *declarator* `T D` (p.e. `static const int * p`) para declarar un objeto. O también puede ser un tipo con una lista de *declarators* separados por comas, del tipo `T D1,D2,...`, en cuyo caso estamos declarando varios objetos:
 
 ```c
-static const int * _Atomic p, * restrict q, a[10], n;
+static const int * p, * const q, a[10], n;
 ```
 
 Cada *declarator* puede declarar un identificador, y opcionalmente amplía la información sobre el tipo del objeto. Los *declarators* pueden estar anidados. Un *full declarator* es un *declarator* que no forma parte de otro *declarator*. Si no declara identificador, no está declarando un objeto, sino un tipo.
@@ -1122,13 +1128,13 @@ Hay otros tres tipos de *declarators* (apuntador, *array* y función).
 
 ##### 6.7.6.1 Pointer declarators
 
-Cuando el *declarator* es para un apuntador, es del tipo:
+Cuando el *declarator* es para un apuntador, su sintaxis es:
 
 ```
-* [qualifiers] [identificador]
+* [qualifiers] identificador
 ```
 
-Los *qualifiers* especificados aquí se aplican al apuntador; en cambio, los especificados anteriormente en la especificación del tipo, se aplican al tipo apuntado.
+Los *type qualifiers* especificados aquí se aplican al apuntador que estamos declarando; en cambio, los especificados en el nivel más alto (junto a los *specifiers*, fuera del *declarator*) se aplican al tipo apuntado.
 
 Para que 2 apuntadores sean compatibles deben ser idénticamente cualificados y apuntar a tipos compatibles.
 
@@ -1145,17 +1151,19 @@ const int_ptr ct_ptr;  // apuntador constante a entero
 
 El elemento de un *array* no puede ser de un tipo incompleto ni tipo función.
 
-Tras el identificador (opcional), habrá un par de corchetes ***[]***, dentro de los cuales podrá haber una expresión o ***\****. En caso de que la declaración sea la de un parámetro de tipo *array*, también podrá haber, opcionalmente, *qualifiers* y/o la palabra `static` (explicado en 6.7.6.3).
+En cuanto a la sintaxis del *declarator*, consiste en el identificador, tras el cual habrá un par de corchetes ***\[\]***, con toda la información. Los corchetes pueden estar vacíos.
 
-Si hay una expresión entera constante mayor a cero, esta especificará el tamaño del *array*.
+También pueden contener una expresión (obligatoriamente entera) que definirá el tamaño del *array*. Si es una expresión constante, será mayor que cero.
 
-Si la expresión no es constante, se trata de un *variable-length array*. En este caso, el *array* no tendrá *linkage* y tendrá *block scope* o *function prototype scope*. Tampoco podrá tener ni *static* ni *thread storage class*.
+En el caso específico de un *array* declarado en la lista de parámetros de una función, los corchetes pueden albergar al principio *type qualifiers* y la palabra `static` (explicado en 6.7.6.3).
 
-Si no se indica el tamaño del *array*, será un tipo incompleto. Si en lugar de una expresión, el tamaño se indica con ***\**** (solo en *function prototype scope*), es que se trata de un *variable-length array* de tamaño no especificado, y sin embargo se trata de un tipo completo.
+Si declaramos un tipo variablemente modificado, el identificador será un identificador ordinario (6.2.3), no tendrá *linkage* y tendrá *block scope* o *function prototype scope*. Un objeto con *static* o *thread storage class* no podrá ser de tipo *variable length array*.
 
-Si el tamaño no es una expresión constante, dentro de *function prototype scope*, se tratará como si fuese sustituido por ***\****.
+Si no se indica el tamaño del *array*, será un tipo incompleto. Si en lugar de una expresión, el tamaño se indica con ***\**** (solo en declaraciones o en *function prototype scope*), es que se trata de un *variable-length array* de tamaño no especificado, y sin embargo se trata de un tipo completo.
 
-El tamaño de una instancia de *variable-length array* se define en tiempo de ejecución, pero no varía a lo largo de todo su tiempo de vida.
+Si la expresión entera es constante y se conoce el tamaño del elemento, no se trata de un *variable length array*. De lo contrario sí.
+
+Si la expresión de tamaño no es constante: Si ocurre en *prototype scope*, se trata como si se reemplazara por ***\****; de lo contrario, cada vez que se evalúe deberá tener un valor superior a cero. El tamaño de una instancia de *variable-length array* se define en tiempo de ejecución, pero una vez hecho no varía a lo largo de todo su tiempo de vida.
 
 Para que dos tipos *array* sean compatibles, sus elementos deben ser de tipos compatibles, y si el tamaño de ambos está definido, estos deben ser iguales.
 
@@ -1166,27 +1174,7 @@ extern int y[];
 
 Son dos tipos distintos: el primero es un apuntador a entero, mientras que el segundo es un *array* de tamaño no especificado (un tipo incompleto). Pero son compatibles, con lo que se puede hacer `x = y`.
 
-Los *declarators* se pueden combinar y anidar. Se pueden usar paréntesis para agrupar. La combinación de *declarators* (*arrays*, apuntadores, funciones, etc.) queda bastante compleja y poco intuitiva (puede ser útil el programa ***cdecl*** para practicar).
-
-La técnica es utilizar en primer lugar el tipo base con el *declarator* de nivel más alto (el *full declarator*), e ir añadiendo las indicaciones de los *declarators* más internos. Ejemplos:
-
-```c
-int (*x)[10];
-```
-
-En este caso tenemos que con el tipo y el *declarator* más exterior, nos daría `int A[10]`, es decir un *array* de 10 `int`s. Ahora afinaremos, entrando en ***A***, que nos dice simplemente `*` (apuntador). Ignoramos el identificador, que no nos da ninguna información. El resultado final, **apuntador a *array* de 10 `int`s**.
-
-```c
-int *x[10];
-```
-
-En este caso no hay paréntesis, con lo que iremos de izquierda a derecha, es decir, esto equivale a:
-
-```c
-int *(x[10]);
-```
-
-Empezamos por `int *A`, o sea, apuntador a `int`. Entramos en ***A***, que nos dice *array* de 10 elementos. Resultado: ***array* de 10 apuntadores a `int`**.
+Veamos un ejemplo de compatibilidad entre *variably modified types* (*VM*):
 
 ```c
 extern int n;
@@ -1214,7 +1202,7 @@ No puede definirse un tipo de retorno *array* o función. El único *storage-cla
 
 Los tipos de los parámetros en una definición no pueden ser incompletos.
 
-La declaración de un parámetro de tipo *array* se ajustará a un tipo apuntador cualificado según los *qualifiers* indicados dentro de los corchetes `[]`. Si dentro de estos también aparece la palabra `static`, entonces en cada llamada a la función, se pasará un *array* que contendrá, por lo menos, el número de elementos indicados en la expresión de tamaño de la declaración (útil para optimizaciones).
+La declaración de un parámetro de tipo *array* se ajustará a un tipo apuntador cualificado según los *qualifiers* indicados dentro de los corchetes ***[]***. Si dentro de estos también aparece la palabra `static`, entonces en cada llamada a la función, se pasará un *array* que contendrá, por lo menos, el número de elementos indicados en la expresión de tamaño de la declaración (útil para optimizaciones).
 
 Del mismo modo, un parámetro de tipo *función que retorna tipo **T*** será convertido a *apuntador a función que retorna tipo **T***.
 
@@ -1246,7 +1234,7 @@ int fun(float a[restrict static 5]);
 En el último ejemplo, se convierte a:
 
 ```c
-fun(float * restrict a);
+int fun(float * restrict a);
 ```
 
 En este caso, pasarle como parámetro un *array* con menos de 5 elementos tendrá un comportamiento desconocido.
@@ -1258,8 +1246,6 @@ int f(void), *fip(), (*pfi)();
 ```
 
 Declara primero una función ***f*** sin parámetros que devuelve `int`; una función ***fip*** sin especificar los parámetros, que devuelve `*int`; y un apuntador ***pfi*** a una función que devuelve `int`, sin especificar parámetros.
-
-Si esta declaración se hace fuera de toda función, tiene *file scope* y *external linkage*. Si se incluye dentro de una función, tienen *block scope* e *internal* o *external linkage* dependiedo de las otras posibles declaraciones de la función con *file scope*. En el caso del ejemplo anterior esto se aplica con ***f*** y ***fip***; en cambio ***pfi*** no tiene *linkage*, pues no es una declaración de función, sino de apuntador.
 
 ```c
 int (*apfi[3])(int *x, int *y);
@@ -1290,7 +1276,7 @@ A veces debemos indicar el nombre de un tipo. Esto se consigue del mismo modo qu
 
 La sintaxis para definir un tipo es la misma que la de una declaración, con la diferencia que debe empezar por `typedef` (como si fuese un *storage class specifier*), y los nombres indicados, en lugar de ser identificadores de variables, pasan a ser alias del tipo especificado.
 
-Si el tipo define un *variable length array*, el tipo tendrá *block scope*. La expresión que define la longitud del *array* se evalúa cuando se define el tipo.
+Si el tipo define un *variably modified type*, el tipo tendrá *block scope*. La expresión que define la longitud del *array* se evalúa cuando se define el tipo.
 
 Ejemplos: `typedef float i1, i2(), *pi1;` define ***i1*** como `float`, ***i2*** como función sin parámetros definidos que devuelve `float` (si hacemos `i2 *p;` tendremos que ***p*** será apuntador a función sin parámetros definidos que devuelve `float`), y ***pi1*** como apuntador a `float`.
 
@@ -1316,7 +1302,7 @@ Si no se inicializan explícitamente, los objetos con *automatic storage duratio
 
 - Los objetos de tipos aritméticos se inicializan a ***0***.
 - Los apuntadores se inicializan a apuntador nulo.
-- Los *arrays* y estructuras inicializan sus elementos y miembros de modo indicado (recursivamente) y todos los *paddings* quedan a ***0***.
+- Los *arrays* y estructuras inicializan sus elementos y miembros del modo indicado (recursivamente) y todos los *paddings* quedan a ***0***.
 - Las uniones inicializan el primer miembro del mismo modo (recursivamente) y todos los *paddings* quedan a ***0***.
 
 El inicializador de un escalar será una expresión simple (opcionalmente entre llaves).
@@ -1388,7 +1374,7 @@ _Static_assert(<expresión>, <literal string>);
 
 La expresión debe ser constante y entera. Si su valor es ***0***, la implementación producirá un mensaje diagnóstico durante la compilación, que incluirá el mensaje indicado en el literal *string*.
 
-Como esta declaración no se usa en tiempo de ejecución, sino solamente en la compilación, los caracteres del literal *string* no van a ser traducidos al *execution character set*. Por ello, se pueden incluir caracteres que no formen parte del *source character set*, aunque la implementación no está obligada a mostrar esos caracteres en caso de que se muestre el mensaje diagnóstico.
+La implementación no está obligada a mostrar los caracteres del literal *string* que no pertenezcan al *basic source character set* en caso de que se muestre tal mensaje diagnóstico.
 
 ### 6.8 Statements and blocks
 
@@ -1398,7 +1384,7 @@ Excepto cuando se indique lo contrario, las sentencias se ejecutan en secuencia.
 
 Las etiquetas son identificadores únicos dentro de una función. Son del tipo:
 
-`etiq:`, `case <expr>:` o `default:`. Tras una etiqueta siempre debe ir una sentencia. Los dos últimos casos son para la sentencia `switch`.
+`etiq:`, `case <expr>:` o `default:`, donde ***expr*** es una expresión constante. Tras una etiqueta siempre debe ir una sentencia. Los dos últimos casos son para la sentencia `switch`.
 
 #### 6.8.2 Compound statement
 
@@ -1435,15 +1421,15 @@ switch (<expression>) <statement>
 
 La expresión será de tipo entero.
 
-No se puede declarar un *variable length array* dentro de la sentencia `switch`, antes de una de las etiquetas; es decir, si alguna etiqueta queda dentro del *scope* de un *variable length array* así, todo el bloque `switch` debe estarlo.
-
 En el cuerpo del `switch` (*statement*) se pueden incluir todas las etiquetas `case` que permita la implementación, y hasta una etiqueta `default`.
+
+Si alguna de las etiquetas de la sentencia `switch` queda dentro del *scope* de un identificador con un tipo variablemente modificado, todo el bloque `switch` debe estarlo. Es decir, la declaración de ese identificador podrá estar fuera del `switch`, o si está dentro, debe estar después de la última etiqueta (sea del tipo que sea).
 
 Cada etiqueta `case` irá acompañada de una expresión entera constante, y no pueden repetirse los valores dentro del mismo `switch` (otra cosa son los `switch` anidados).
 
 Al entrar en el cuerpo del `switch`, la ejecución salta directamente a la etiqueta `case` cuyo valor coincida con la expresión de control. Si no existe ninguna etiqueta que coincida, saltará a la etiqueta `default`. Si tampoco existe esta, ninguna parte del cuerpo del `switch` será ejecutado.
 
-Una vez se haya producido el salto a la etiqueta correspondiente, el código se ejecutará hasta el final del bloque, independientemente de las otras etiquetas, con lo que si queremos que solo se ejecute el código correspondiente a la etiqueta donde hemos saltado, habrá que incluir una sentencia `break` al final de dicho fragmento de código.
+Una vez se haya producido el salto a la etiqueta correspondiente, el código se ejecutará hasta el final del bloque, independientemente de las otras etiquetas, con lo que si queremos que solo se ejecute el código correspondiente a la etiqueta donde hemos saltado, habrá que incluir una sentencia `break` antes de la siguiente etiqueta `case`.
 
 #### 6.8.5 Iteration statements
 
@@ -1451,8 +1437,10 @@ Una vez se haya producido el salto a la etiqueta correspondiente, el código se 
 while (<expressionC>) <statement>
 do <statement> while (<expressionC>);
 for ([<expression>]; [<expressionC>] ; [<expression>]) <statement>
-for (<declaration> [<expressionC>]; [<expression>]) <statement>
+for (<declaration>; [<expressionC>]; [<expression>]) <statement>
 ```
+
+El ***statement*** se denomina aquí **cuerpo del bucle**.
 
 Las expresiones de control (***expressionC***) serán de tipo escalar.
 
@@ -1472,7 +1460,7 @@ La evaluación de la expresión de control se produce después de cada ejecució
 
 ##### 6.8.5.3 The for statement
 
-La primera expresión (o declaración) se ejecuta solo la primera vez. Si es una declaración, el *scope* de los identificadores es el resto de la declaración, las otras dos expresiones y el cuerpo entero del bucle.
+La primera expresión (o declaración) se ejecuta solo la primera vez. Si es una declaración, el *scope* de los identificadores es el *iteration statement* entero (es decir, el resto de la declaración, las otras dos expresiones y el cuerpo entero del bucle).
 
 La segunda expresión es la expresión de control del bucle, que se evalúa antes de cada ejecución del cuerpo del bucle.
 
@@ -1495,7 +1483,7 @@ Realizan un salto incondicional.
 
 Salta a una etiqueta, definida en la función actual.
 
-No se puede realizar un salto dentro del *scope* de un *variable length array* desde fuera de ese *scope* (sí se puede de dentro a fuera).
+No se puede realizar un salto dentro del *scope* de un tipo variablemente modificado desde fuera de ese *scope* (sí se puede de dentro a fuera).
 
 ##### 6.8.6.2 The continue statement
 
@@ -1659,7 +1647,7 @@ equivalen respectivamente a:
 
 ```
 #if defined <identificador>
-#if !defined <identificador>.
+#if !defined <identificador>
 ```
 
 Las directivas `#if`, `#ifdef` y `#ifndef` controlan un grupo de líneas de código que se halla justo debajo de ellas. El grupo puede incluir código C, y/o directivas de preproceso de todo tipo, incluyendo directivas de inclusión condicional anidadas. Si la expresión evalúa a ***0*** se ignora ese código. Si es ***1*** se incluye.
@@ -1719,7 +1707,7 @@ Aunque definamos un nombre de macro sin valor (`#define NOMBRE`), el nombre qued
 
 ##### 6.10.3.1 Argument substitution
 
-Cada parámetro presente en la *replacement list* en la definición de una función macro, es reemplazado por el argumento proporcionado en la llamada, aunque antes de ser sustituido, **cada argumento es expandido completamente** (recursivamente todo lo que se pueda), **a no ser que esté precedido por `#` o `##`, o seguido de `##`**.
+Cada parámetro presente en la *replacement list* en la definición de una función macro, es reemplazado por el argumento proporcionado en la llamada, aunque antes de ser sustituido, **cada ARGUMENTO de la llamada es expandido completamente** (recursivamente hasta que no se pueda más), **a no ser que esté precedido por `#` o `##`, o seguido de `##`**, en cuyo caso se sustituye tal cual en la *replacement list*.
 
 ##### 6.10.3.2 The # operator
 
@@ -1767,7 +1755,7 @@ int n = foo;
 
 En este caso, `foo` se sustituye por `(bar + 5)`. Se reescanea esta expansión y vemos que `bar` se sustituye por `(foo * 5)`, quedando pues `((foo * 5) + 5)`. Al reescanear ahora, aparece `foo`, que no se expande por ser el nombre de la macro que estamos procesando. El resto del resultado no contiene nombres de macro, con lo que la línea quedará `int n = ((foo * 5) + 5);`.
 
-Si la expansión de una invocación de macro produce una directiva de preproceso, dicha directiva, aunque tenga una sintaxis correcta como directiva no será procesada como tal, y se dejará así. Es decir, una expansión macro no puede generar directivas de preproceso. Hay, sin embargo, un método para generar funcionalidad *pragma* (6.10.9).
+Si la expansión de una invocación de macro produce una directiva de preproceso en una línea que no era una directiva de preproceso, dicha directiva, aunque tenga una sintaxis correcta como directiva no será procesada como tal, y se dejará tal cual. Es decir, una expansión macro no puede generar nuevas directivas de preproceso. Hay, sin embargo, un método para generar funcionalidad *pragma* (6.10.9).
 
 ##### 6.10.3.5 Scope of macro definitions
 
@@ -1790,7 +1778,7 @@ Ejemplos:
 
 Veamos qué produciría `glue(HIGH, LOW)`: lo primero es que, como tanto ***a*** como ***b*** están junto a un token `##`, no se expanden antes de la llamada. Por tanto, el resultado es `HIGH ## LOW`, es decir, `HIGHLOW`. Ahora se reescanea ese resultado, y vemos que se debe sustituir por `"hello"`.
 
-Veamos ahora `xglue(HIGH, LOW)`: lo primero, como ninguno de los parámetros está junto a ningún token `#` ni `##`, se deben expandir primero. `HIGH` se queda tal cual, porque no se corresponde con ningún nombre de macro, pero `LOW` se expande a `LOW ", world"`. Reescaneamos este resultado: lo primero es `LOW`, que es un nombre de macro, pero como es el mismo nombre de la macro que estamos expandiendo, se queda aquí. Por otro lado, `", world"` no es un nombre de macro, con lo que hemos terminado. Resumiendo, los argumentos expandidos son `HIGH` y `LOW ", world"`, es decir, `xglue(HIGH, LOW)` se expande a `glue(HIGH, LOW ", world")`. Ahora, al reescanear, vemos que se corresponde con una función macro y sustituimos. Queda `HIGH ## LOW ", world"`, lo cual nos da `HIGHLOW ", world"`. Reescaneamos nuevamente, y vemos que `HIGHLOW` se sustituye por `"hello"`, siendo el resultado final, `"hello" ", world"`. Estos dos *strings*, se concatenarán automáticamente en la fase 6 de traducción como `"hello, world"`.
+Veamos ahora `xglue(HIGH, LOW)`: lo primero, como ninguno de los parámetros está junto a ningún token `#` ni `##`, se deben expandir primero. El argumento `HIGH` se queda tal cual, porque no se corresponde con ningún nombre de macro, pero el argumento `LOW` se expande a `LOW ", world"`. Vamos a ver si podemos volver a expandirlo: reescaneamos este resultado: lo primero es `LOW`, que es un nombre de macro, pero como es el mismo nombre de la macro que estamos expandiendo, se queda aquí. Por otro lado, `", world"` no es un nombre de macro, con lo que hemos terminado. Resumiendo, los argumentos `HIGH` y `LOW` de la llamada han sido expandidos a `HIGH` y `LOW ", world"` antes de sustituirlos en la *replacement list*, es decir, `glue(a, b)` queda, tras la sustitución de argumentos, como `glue(HIGH, LOW ", world")`. Ahora, al reescanear, vemos que se corresponde con una función macro, con lo que procedemos a sustituir los argumentos `HIGH` y `LOW ", world"` en `a ## b`. Como están junto a `##`, sustituimos directamente sin expandir, y queda `HIGH ## LOW ", world"`, lo cual nos da `HIGHLOW ", world"`. Reescaneamos nuevamente, y vemos que `HIGHLOW` se sustituye por `"hello"`, siendo el resultado final, `"hello" ", world"`. Estos dos *strings*, se concatenarán automáticamente en la fase 6 de traducción como `"hello, world"`.
 
 #### 6.10.4 Line control
 
@@ -1850,7 +1838,7 @@ Estos nombres (excepto ***\_\_LINE\_\_*** y posiblemente ***\_\_FILE\_\_***) man
 
 ***\_\_STDC_HOSTED\_\_*** ***1*** si la implementation es *hosted*, o ***0*** si no.
 
-***\_\_STDC_VERSION\_\_*** para *C11* es ***201112L***; para *C18* es ***201710L* (`long int` con año y mes del estándar).
+***\_\_STDC_VERSION\_\_*** para *C11* es ***201112L***; para *C18* es ***201710L*** (`long int` con año y mes del estándar).
 
 ##### 6.10.8.2 Environment macros
 
@@ -1858,7 +1846,7 @@ Estos nombres son opcionalmente definidos por las implementaciones:
 
 ***\_\_STDC_ISO_10646\_\_*** es una constante entera del tipo `yyyymmL`. Si está definida, la codificación de los caracteres *wide* `wchar_t` se corresponde con el código corto definido en el estándar *ISO/IEC 10646*.
 
-***\_\_STDC_MB_MIGHT_NEQ_WC\_\_*** es una constante entera con valor ***1*** que indica que una constante carácter de un carácter del juego básico puede tener un valor distinto como `wchar_t`.
+***\_\_STDC_MB_MIGHT_NEQ_WC\_\_*** es una constante entera con valor ***1*** que indica que una constante carácter de un carácter del juego básico puede tener un valor distinto al pasar a `wchar_t`.
 
 ***\_\_STDC_UTF_16\_\_*** y ***\_\_STDC_UTF_32\_\_*** indican, respectivamente, que los valores de tipo `char16_t` y `char32_t` están codificados mediante *UTF-16* y *UTF-32*.
 
@@ -1874,7 +1862,7 @@ Estos nombres de macro, si están definidos (con valor ***1*** si no se dice lo 
 
 ***\_\_STDC_NO_THREADS\_\_*** indica que no está soportado ***threads.h***.
 
-***\_\_STDC_NO_VLA\_\_*** indica que no están soportados los *variable-length arrays*.
+***\_\_STDC_NO_VLA\_\_*** indica que no están soportados los *variably modified types*.
 
 #### 6.10.9 Pragma operator
 
