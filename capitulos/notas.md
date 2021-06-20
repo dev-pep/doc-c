@@ -113,7 +113,9 @@ Veamos ejemplos de creciente dificultad en los que podemos aplicar el algoritmo:
 
 `int (*f)(int,float)` - «Declaración de un apuntador a función con parámetros (int,float) que retorna int.»
 
-`int *(**x[5]()[7](int))[4]` - «Declaración de un array de 5 elementos función que retorna array de 7 elementos función con parámetros (int) que retorna apuntador a apuntador a array de 4 elementos apuntador a int.»
+`int *(**x[5] () [7] (int))[4]` - «Declaración de un array de 5 elementos función que retorna array de 7 elementos función con parámetros (int) que retorna apuntador a apuntador a array de 4 elementos apuntador a int.»
+
+Para incorporar *type qualifiers* es útil repasar la sintaxis de los tres tipos de *declarators* (6.7.6).
 
 Para practicar este tipo de ejercicios puede resultar muy útil la ayuda de la aplicación ***cdecl***.
 
