@@ -71,7 +71,7 @@ Teniendo en cuenta esto, hay que tener cuidado con el orden con el que definimos
 
 ## Tipos complejos
 
-Los tipos de datos en *C* pueden llegar a ser muy complejos, de tal manera que hay que aprender a interpretarlos, no solo para poder escribirlos correctamente, sino incluso para poder leerlos, pues en ocasiones se pueden formar unos tipos derivados tremendamente crípticos. En caso de tener que trabajar con un tipo así, es recomendable usar `typedef` para aumentar la legibilidad del código.
+Dado que los *declarators* (6.7.6 del estándar) pueden anidarse sin limitación, los tipos de datos en *C* pueden llegar a ser muy complejos de interpretar, de tal manera que hay que practicar dicha interpretación para no perderse, y por supuesto para poder crear los tipos de la forma que deseemos. En ocasiones se pueden formar unos tipos derivados extremadamente crípticos. En caso de tener que trabajar con un tipo así, es recomendable usar `typedef` para aumentar la legibilidad del código.
 
 ### La técnica
 
