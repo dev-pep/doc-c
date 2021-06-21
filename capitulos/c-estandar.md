@@ -908,7 +908,7 @@ Los *storage-class specifiers* de un *array*, estructura, o unión, pasan a serl
 
 #### 6.7.2 Type specifiers
 
-El tipo base en sí. Por lo menos debe haber uno en la declaración. Puede ser un nombre de tipo, estructura, unión, enumeración o nombre `typedef`.
+El tipo base en sí. Debe haber exactamente uno en la declaración. Puede ser un nombre de tipo, estructura, unión, enumeración o nombre `typedef`.
 
 Un tipo entero indicado sin `unsigned`, será como si se indicara `signed`. Un tipo entero que no indique `int` se considerará como si lo indicara. Es decir, `long` equivale a `long int`, o `signed short` equivale a `short int`.
 

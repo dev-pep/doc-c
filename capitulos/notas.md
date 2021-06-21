@@ -71,11 +71,11 @@ Teniendo en cuenta esto, hay que tener cuidado con el orden con el que definimos
 
 ## Tipos complejos
 
-Dado que los *declarators* (6.7.6 del estándar) pueden anidarse sin limitación, los tipos de datos en *C* pueden llegar a ser muy complejos de interpretar, de tal manera que hay que practicar dicha interpretación para no perderse, y por supuesto para poder crear los tipos de la forma que deseemos. En ocasiones se pueden formar unos tipos derivados extremadamente crípticos. En caso de tener que trabajar con un tipo así, es recomendable usar `typedef` para aumentar la legibilidad del código.
+Dado que los *declarators* (6.7.6 del estándar) pueden anidarse a voluntad (aunque la implementación puede imponer un límite), los tipos de datos en *C* pueden llegar a ser muy complejos de interpretar, de tal manera que hay que practicar dicha interpretación para no perderse, y por supuesto para poder crear los tipos de la forma que deseemos. En ocasiones se pueden formar unos tipos derivados extremadamente crípticos. En caso de tener que trabajar con un tipo así, es recomendable usar `typedef` para aumentar la legibilidad del código.
 
 ### La técnica
 
-Una declaración está compuesta por un tipo básico, y *declarators* que derivan ese tipo básico. Existen básicamente tres tipos de elementos que pueden formar un tipo derivado. Dejando a parte las estructuras, uniones y tipos atómicos, los elementos que pueden entrar en juego en una declaración son:
+Una declaración está compuesta por un tipo básico, y *declarators* que derivan ese tipo básico. Existen básicamente tres tipos de *declarators* que pueden derivar un tipo base:
 
 - *Array*, caracterizado por un par de corchetes ***[]*** (con o sin una expresión entera) a la derecha del tipo que está derivando.
 - Apuntador, caracterizado por un asterisco ***\**** a la izquierda del tipo que está derivando.
