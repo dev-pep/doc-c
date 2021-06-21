@@ -75,16 +75,18 @@ Dado que los *declarators* (6.7.6 del estándar) pueden anidarse sin limitación
 
 ### La técnica
 
-Existen básicamente tres tipos de elementos que pueden formar un tipo derivado. Dejando a parte las estructuras, uniones y tipos atómicos, los elementos que pueden entrar en juego son:
+Una declaración está compuesta por un tipo básico, y *declarators* que derivan ese tipo básico. Existen básicamente tres tipos de elementos que pueden formar un tipo derivado. Dejando a parte las estructuras, uniones y tipos atómicos, los elementos que pueden entrar en juego en una declaración son:
 
 - *Array*, caracterizado por un par de corchetes ***[]*** (con o sin una expresión entera) a la derecha del tipo que está derivando.
 - Apuntador, caracterizado por un asterisco ***\**** a la izquierda del tipo que está derivando.
 - Función, caracterizado por un par de paréntesis ***()*** (con o sin una lista de tipos), a la derecha del tipo que está derivando.
 
+Los *declarators* de *array* y función tienen preferencia sobre el de apuntador.
+
 Asumiendo que deseamos leer correctamente un tipo derivado construido a partir de un tipo base, el algoritmo a seguir sería:
 
-1. Iniciar en el identificador, o en su defecto, en el paréntesis más interior, en el lugar justo donde se colocaría dicho identificador si hubiera que incluirlo. Escribimos **«Declaración de un »**.
-2. Mirar a la derecha, desde el punto donde estamos hasta el próximo paréntesis derecho ***)*** o el final del tipo (lo que suceda antes). Si no hay nada, pasamos al punto 3. Si lo hay, se realizará, para cada elemento encontrado, secuencialmente:
+1. Iniciar en el identificador, o en su defecto, en el paréntesis más interior, en el lugar justo donde se colocaría dicho identificador si hubiera que incluirlo (para identificar el sitio exacto, ver más abajo). Escribimos **«Declaración de un »**.
+2. Mirar primero a la derecha, desde el punto donde estamos hasta el próximo paréntesis derecho ***)*** o el final del tipo (lo que suceda antes). Si no hay nada, pasamos al punto 3. Si lo hay, se realizará, para cada elemento encontrado, secuencialmente:
     - Si el elemento es *array*, puede tener una expresión entera dentro, en cuyo caso escribiremos **«array de N elementos »**, donde ***N*** es el valor de la expresión. Si no hay expresión, simplemente escribiremos **«array de elementos »**.
     - Si el elemento es función, habrá un par de paréntesis, dentro de los cuales habrá, opcionalmente, una lista de tipos separados por comas. En caso de que no haya nada dentro de los paréntesis, escribiremos **«función que retorna »**. Si existe una lista de tipos, escribiremos **«función con parámetros (...) que retorna»**, donde '...' será la lista de parámetros tal como aparece en el tipo.
 3. Miraremos ahora a la izquierda del punto inicial, desde el punto actual hasta el próximo paréntesis izquierdo ***(*** o justo después del tipo base (lo que suceda antes). Si no hay nada, pasamos al siguiente punto. Si lo hay, se realizará, para cada elemento encontrado, secuencialmente:
@@ -92,6 +94,12 @@ Asumiendo que deseamos leer correctamente un tipo derivado construido a partir d
 4. Si hemos terminado de procesar un paréntesis interior, ahora saldremos de ese paréntesis y seguiremos desde el paso 2. En cambio, si no se trataba de un paréntesis interior, es que hemos terminado con la declaración del tipo, y solo queda por procesar el tipo base. En ese caso, simplemente tenemos que escribir ese **tipo base y un punto final**.
 
 En cuanto al segundo subpaso del paso 2, si queremos detallar los tipos de las listas de parámetros que pudiesen haber aparecido, podemos aplicarles este algoritmo a cada uno de ellos.
+
+Si no hay identificador en la especificación de tipo (puede pasar en los *casts*, o como argumento de `sizeof`), hay que buscar el lugar exacto que ocuparía este. Solo hay que tener en cuenta que dicho punto cumple estas tres condiciones:
+
+- Está a la derecha de todos los indicadores de apuntador (***\****).
+- Está a la izquierda de todos los indicadores de función (***()***) y *array* (***[]***).
+- Está dentro del par de paréntesis más interior posible.
 
 ### Ejemplos
 
@@ -111,11 +119,21 @@ Veamos ejemplos de creciente dificultad en los que podemos aplicar el algoritmo:
 
 `int *(*[4])[3][5]` - «Declaración de un array de 4 elementos apuntador a array de 3 elementos array de 5 elementos apuntador a int.»
 
-`int (*f)(int,float)` - «Declaración de un apuntador a función con parámetros (int,float) que retorna int.»
+`int (*)(int,float)` - «Declaración de un apuntador a función con parámetros (int,float) que retorna int.»
 
-`int *(**x[5] () [7] (int))[4]` - «Declaración de un array de 5 elementos función que retorna array de 7 elementos función con parámetros (int) que retorna apuntador a apuntador a array de 4 elementos apuntador a int.»
+`int *(**[][7])(char)` - «Declaración de un array de elementos array de 7 elementos apuntador a apuntador a función con parámetros (char) que retorna apuntador a int.»
 
-Para incorporar *type qualifiers* es útil repasar la sintaxis de los tres tipos de *declarators* (6.7.6).
+Para incorporar también *type qualifiers* es útil repasar la sintaxis de los tres tipos de *declarators* (6.7.6). En este sentido, podemos encontrarnos estos cualificadores dentro de los corchetes de un *declarator array*, pero solo dentro de la declaración de parámetros de una función. También nos podemos encontrar con la declaración de un *variable-length array*. En todo caso, se añade la identificación de tal cualificador al texto correspondiente a la especificación del *array* pertinente, sin más problema. Lo más complejo puede ser localizar dónde encaja un cualificador en una serie de *declarators* combinados de tipo apuntador. Sin embargo, es muy sencillo: correponde al asterisco a la izquierda del *qualifier*. Si no hay tal apuntador a su izquierda es porque el cualificador pertenece al tipo base (puede estar incluso a la izquierda de dicho tipo).
+
+`int * const p` - «Declaración de un apuntador constante a int.»
+
+`int const * p` - «Declaración de un apuntador a int constante.»
+
+`const int * p` - igual que el anterior.
+
+`int * const (* const *[][7])(char)` - «Declaración de un array de elementos array de 7 elementos apuntador a apuntador **constante** a función con parámetros (char) que retorna apuntador **constante** a int.»
+
+Recordemos que las funciones no pueden retornar una función ni un *array*. Esto implica que en el nivel de anidamiento actual, tras el *declarator* de función no habrá otro *declarator*. Por otro lado, no pueden existir *arrays* de funciones. Esto implica que en el nivel de anidamiento actual, tras un *declarator* de tipo *array*, solo puede haber *declarators* de tipo *array*.
 
 Para practicar este tipo de ejercicios puede resultar muy útil la ayuda de la aplicación ***cdecl***.
 
