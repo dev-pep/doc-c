@@ -131,7 +131,7 @@ Para practicar con los tipos del lenguaje *C* puede resultar muy útil la ayuda 
 
 ### *Type qualifiers*
 
-Para incorporar también *type qualifiers* es útil repasar la sintaxis de los tres tipos de *declarators* (6.7.6). En este sentido, podemos encontrarnos estos cualificadores dentro de los corchetes de un *declarator array*, pero solo dentro de la declaración de parámetros de una función. También nos podemos encontrar con la declaración de un *variable-length array*. En todo caso, se añade la identificación de tal cualificador al texto correspondiente a la especificación del *array* pertinente, sin más problema. Lo más complejo puede ser localizar dónde encaja un cualificador en una serie de *declarators* combinados de tipo apuntador. Sin embargo, es muy sencillo: correponde al asterisco a la izquierda del *qualifier*. Si no hay tal apuntador a su izquierda es porque el cualificador pertenece al tipo base (puede estar incluso a la izquierda de dicho tipo).
+Para incorporar también *type qualifiers*, lo más frecuente es utilizarlos en los *declarators* de tipo apuntador. Lo importante aquí es vincular el cualificador al asterisco indicador de apuntador (***\****) adecuado. Por suerte, es muy sencillo: corresponde siempre al asterisco más próximo a la izquierda del *qualifier*. Si no hay tal asterisco a su izquierda es porque el cualificador pertenece al tipo base (puede estar tanto a la derecha como a la izquierda de dicho tipo).
 
 Veamos unos ejemplos (esta vez con identificador):
 
