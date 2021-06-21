@@ -1194,6 +1194,28 @@ void fcompat(void)
 
 Aquí, ***p*** es un apuntador a *array* `int[4][n+1]`. En cambio, ***a*** es un *array* cuyos (***n***) elementos son de tipo `int[6][m]`. Por eso `p = a` no es válido.
 
+Ejemplo: podemos declarar un *array* de tamaño no especificado:
+
+```c
+int a[];
+```
+
+Esto no se puede hacer si el identificador no tiene *linkage* (la declaración es la definición, y no se puede definir un tipo incompleto). Pero hay algunas declaraciones que no son legales:
+
+```c
+int a[][];  // error!
+int a[5][];  // error!
+int a[][5];  // OK
+```
+
+En el primer caso, no está permitido, porque estamos declarando un *array* de tamaño no especificado cuyos elementos son del tipo `int[]`, el cual es, a su vez, un *array* de tamaño no especificado, el cual es un tipo incompleto, y recordemos que no podemos declarar un *array* de elementos con tipo incompleto.
+
+El segundo caso es similar: declaración de un *array* de 5 elementos `int[]`, es decir, de 5 elementos de tipo incompleto.
+
+Sin embargo, el tercer caso es correcto, ya que estamos declarando un *array* de tamaño sin especificar, cuyos elementos son `int[5]`, es decir, elementos de un tipo completo.
+
+Resumiendo, **solo el primero de los índices de un *array* multidimensional puede estar en blanco en la declaración**.
+
 ##### 6.7.6.3 Function declarators (including prototypes)
 
 Es del tipo `T D(lista-parms)`, donde la lista de parámetros especifica los tipos, y puede declarar los identificadores de los parámetros. Puede formar parte de la definición de la función, o ser simplemente un prototipo (declaración de la función).
