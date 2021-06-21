@@ -101,6 +101,10 @@ Si no hay identificador en la especificación de tipo (puede pasar en los *casts
 - Está a la izquierda de todos los indicadores de función (***()***) y *array* (***[]***).
 - Está dentro del par de paréntesis más interior posible.
 
+Recordemos que las funciones no pueden retornar una función ni un *array*. Esto implica que en el nivel de anidamiento actual, tras el *declarator* de función no habrá otro *declarator* (no habrá corchetes ni listas de parámetros entre paréntesis).
+
+Por otro lado, no pueden existir *arrays* de funciones. Esto implica que en el nivel de anidamiento actual, tras un *declarator* de tipo *array*, solo puede haber *declarators* de tipo *array*. Sin embargo, no se puede declarar un *array* de tipos incompletos, por lo que en un *array* multidimensional solo el primer declarator (el primer par de corchetes) puede estar vacío.
+
 ### Ejemplos
 
 Veamos ejemplos de creciente dificultad en los que podemos aplicar el algoritmo:
@@ -132,10 +136,6 @@ Para incorporar también *type qualifiers* es útil repasar la sintaxis de los t
 `const int * p` - igual que el anterior.
 
 `int * const (* const *[][7])(char)` - «Declaración de un array de elementos array de 7 elementos apuntador a apuntador **constante** a función con parámetros (char) que retorna apuntador **constante** a int.»
-
-Recordemos que las funciones no pueden retornar una función ni un *array*. Esto implica que en el nivel de anidamiento actual, tras el *declarator* de función no habrá otro *declarator* (no habrá corchetes ni listas de parámetros entre paréntesis).
-
-Por otro lado, no pueden existir *arrays* de funciones. Esto implica que en el nivel de anidamiento actual, tras un *declarator* de tipo *array*, solo puede haber *declarators* de tipo *array*. Sin embargo, no se puede declarar un *array* de tipos incompletos, por lo que en un *array* multidimensional solo el primer declarator (el primer par de corchetes) puede estar vacío.
 
 Para practicar este tipo de ejercicios puede resultar muy útil la ayuda de la aplicación ***cdecl***.
 
