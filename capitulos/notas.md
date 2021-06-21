@@ -127,7 +127,13 @@ Veamos ejemplos de creciente dificultad en los que podemos aplicar el algoritmo:
 
 `int *(**[][7])(char)` - «Declaración de un array de elementos array de 7 elementos apuntador a apuntador a función con parámetros (char) que retorna apuntador a int.»
 
+Para practicar con los tipos del lenguaje *C* puede resultar muy útil la ayuda de la aplicación ***cdecl***.
+
+### *Type qualifiers*
+
 Para incorporar también *type qualifiers* es útil repasar la sintaxis de los tres tipos de *declarators* (6.7.6). En este sentido, podemos encontrarnos estos cualificadores dentro de los corchetes de un *declarator array*, pero solo dentro de la declaración de parámetros de una función. También nos podemos encontrar con la declaración de un *variable-length array*. En todo caso, se añade la identificación de tal cualificador al texto correspondiente a la especificación del *array* pertinente, sin más problema. Lo más complejo puede ser localizar dónde encaja un cualificador en una serie de *declarators* combinados de tipo apuntador. Sin embargo, es muy sencillo: correponde al asterisco a la izquierda del *qualifier*. Si no hay tal apuntador a su izquierda es porque el cualificador pertenece al tipo base (puede estar incluso a la izquierda de dicho tipo).
+
+Veamos unos ejemplos (esta vez con identificador):
 
 `int * const p` - «Declaración de un apuntador constante a int.»
 
@@ -135,13 +141,11 @@ Para incorporar también *type qualifiers* es útil repasar la sintaxis de los t
 
 `const int * p` - igual que el anterior.
 
-`int * const (* const *[][7])(char)` - «Declaración de un array de elementos array de 7 elementos apuntador a apuntador **constante** a función con parámetros (char) que retorna apuntador **constante** a int.»
-
-Para practicar este tipo de ejercicios puede resultar muy útil la ayuda de la aplicación ***cdecl***.
+`int * const (* const *p[][7])(char)` - «Declaración de un array de elementos array de 7 elementos apuntador a apuntador **constante** a función con parámetros (char) que retorna apuntador **constante** a int.»
 
 ## Tipos compatibles y compuestos
 
-Un objeto puede ser declarado en el mismo *scope* o *linkage* utilizando tipos distintos, siempre y cuando estos tipos sean *compatibles*. El tipo resultante de estas declaraciones será el que resulte de la combinación de todas ellas, y se le llama *tipo compuesto*.
+Un objeto puede ser declarado varias veces en el mismo *scope* o *linkage* (siempre que exista *linkage* interno o externo) utilizando tipos distintos, siempre y cuando estos tipos sean *compatibles*. El tipo resultante de estas declaraciones será el que resulte de la combinación de todas ellas, y se le llama *tipo compuesto*.
 
 La conversión de y a un tipo compatible no cambia valores, representación en memoria ni requisitos de alineación.
 
