@@ -520,7 +520,7 @@ Una constante de una enumeración tiene tipo `int`.
 
 ##### 6.4.4.4 Character constants
 
-Un carácter puede ser *multibyte* o *wide*. Lo de 1 caracter 1 `char` es un concepto antiguo, ya que es improbable que el juego de ejecución completo esté codificado mediante un *byte* por miembro. Aunque en el compilador *GCC*, por ejemplo, permite especificar explícitamente una codificación para el juego de caracteres de ejecución, no es práctica habitual especificar un juego de caracteres de esas características. Sin embargo, podríamos usarlo si solo utilizamos los 128 caracteres *ASCII* (y opcionalmente una codificación extendida de *ASCII* con 256 caracteres en total).
+Un carácter puede ser *multibyte* o *wide*. Lo de 1 caracter 1 `char` es un concepto antiguo, ya que es improbable que el juego de ejecución completo esté codificado mediante un *byte* por miembro. Aunque el compilador *GCC*, por ejemplo, permite especificar explícitamente una codificación para el juego de caracteres de ejecución, no es práctica habitual especificar un juego de caracteres de esas características. Sin embargo, podríamos usarlo si solo utilizamos los 128 caracteres *ASCII* (y opcionalmente una codificación extendida de *ASCII* con 256 caracteres en total).
 
 Una constante carácter (en el archivo fuente) está compuesta por una secuencia de uno (o más, si lo permite la implementación) caracteres *multibyte* (por su codificación en el archivo) entre comillas simples. Un carácter *wide* es lo mismo, pero con un prefijo ***L***, ***u*** o ***U***:
 
@@ -784,7 +784,7 @@ Son `==` (igualdad) y `!=` (desigualdad). Los operandos deben cumplir uno de est
 - Ambos serán de tipo aritmético.
 - Serán dos apuntadores a tipos compatibles.
 - Serán dos apuntadores, uno de los cuales es `*void`. El resultado será del tipo del apuntador `*void` con las *qualifications* oportunas.
-- Uno operando será un apuntador y el otro una constante ***NULL***. La constante se convierte al tipo del apuntador.
+- Un operando será un apuntador y el otro una constante ***NULL***. La constante se convierte al tipo del apuntador.
 
 Dos complejos se evalúan igual si sus partes reales e imaginarias son iguales. Dos operandos aritméticos de distinto tipo se evalúan igual si sus conversiones al tipo pertinente son iguales.
 
