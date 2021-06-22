@@ -17,13 +17,13 @@ Biblioteca estándar:
 Otros:
 
 - [Compilador GCC](capitulos/gcc.md)
-- Depurador *GDB*
-- Construcción con *make*
-- Otras herramientas (*tmux*, *valgrind*)
+- Depurador GDB
+- Construcción con make
+- Otras herramientas (tmux, valgrind)
 
 ## Bibliografía
 
-- [N2176](n2176.pdf), último borrador antes de la aprobación del estándar.
+- [N2176](n2176.pdf), último borrador antes de la aprobación del estándar *C18*.
 
 ---
 
