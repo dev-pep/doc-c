@@ -17,8 +17,9 @@ Biblioteca estándar:
 Otros:
 
 - [Compilador GCC](capitulos/gcc.md)
-- Depurador *GDB* (*próximamente*)
-- Construcción con *make* (*próximamente*)
+- Depurador *GDB*
+- Construcción con *make*
+- Otras herramientas (*tmux*, *valgrind*)
 
 ## Bibliografía
 
