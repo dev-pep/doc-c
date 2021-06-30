@@ -19,7 +19,7 @@ Otros:
 - [Compilador GCC](capitulos/gcc.md)
 - Depurador GDB
 - Make
-- [tmux](capitulos/tmux,md)
+- [tmux](capitulos/tmux.md)
 
 ## Bibliografía
 
