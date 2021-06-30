@@ -36,23 +36,31 @@ Las sesiones tienen un nombre asociado. Si no lo especificamos, la primera se de
 
 Ejecutar `tmux` sin parámetros es equivalente a ejecutar `tmux new-session`.
 
-`tmux new -s MiNombre`
+```
+tmux new -s MiNombre
+```
 
 No es necesario que haya espacio entre el *flag* y el nombre. Si dicho nombre contiene espacios, habrá que indicarlo entrecomillado.
 
 Al crear una nueva sesión se puede indicar un comando que será ejecutado en esta.
 
-`tmux new -s Editor "vim ~/proyecto/main.c"`
+```
+tmux new -s Editor "vim ~/proyecto/main.c"
+```
 
 O equivalente:
 
-`tmux new -s Editor -- vim ~/proyecto/main.c`
+```
+tmux new -s Editor -- vim ~/proyecto/main.c
+```
 
 Si el comando no contiene espacios no es necesario entrecomillarlo.
 
 Al crear una sesión, esta contiene una sola ventana, cuyo nombre se basa en lo que está ejecutando. Si queremos crear la sesión dando también nombre a la ventana inicial, usaremos el *flag* `-n` (de *name*).
 
-`tmux new -s Sesión -n Comandos`
+```
+tmux new -s Sesión -n Comandos
+```
 
 Como siempre, no hace falta separar el *flag* del nombre con espacios, y si el nombre contiene espacios, se debe indicar entrecomillado.
 
