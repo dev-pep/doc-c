@@ -208,4 +208,48 @@ bind C-a send-prefix
 
 ### *Layouts* predefinidos
 
-Dado que los comandos *tmux* pueden ejecutarse desde fuera de la aplicación, crear un *layout* personalizado es muy sencillo, mediante un simple *shell script*.
+Dado que los comandos *tmux* pueden ejecutarse desde fuera de la aplicación, crear un *layout* personalizado es muy sencillo, mediante un simple *shell script*. Un ejemplo:
+
+```bash
+#!/bin/bash
+tmux new-session -d -s IDE -n Edición -- vim main.c
+tmux split-window -h -- vim main.h
+tmux split-window -v
+tmux select-pane -t 0
+tmux new-window -n Consola
+tmux send-keys 'cd ~/proyecto' Enter
+tmux select-window -t Edición
+tmux attach-session -t IDE
+```
+
+La primera línea crea la sesión (y renombra la ventana), y lo hace en modo *detached*, puesto que de lo contrario entraría en *tmux* y no seguiría ejecutando comandos hasta que *tmux* retornase. El comando también da nombre a la ventana de la sesión, y le asocia el proceso `vim main.c`. Los comandos a continuación actuarán sobre esta sesión.
+
+A continuación crea un par de paneles más y selecciona el panel 0 como activo en esa ventana.
+
+Luego crea otra ventana a la que llama ***Consola***. Como no se especifica el *flag* `-d`, esa ventana pasa a ser la ventana actual.
+
+A continuación hacemos uso del comando `send-keys`. Este comando emula el envío de pulsaciones de teclado al panel activo de la ventana actual. Este comando utiliza un número arbitrario de argumentos: palabras o texto entre comillas. Los espacios que separan los argumentos son descartados. Algunas secuencias de caracteres son mapeadas a teclas específicas (`F1` a `F12`, `Enter`, `Home`, `End`, `PgDn`, `PgUp`, `Tab`, `Escape`, `BSpace`, `Up`, `Down`, `Left`, `Right`, `C-<tecla>`, `M-<tecla>`, etc.), siempre que tal secuencia no esté entre comillas.
+
+En este caso, se introduce automáticamente el comando `cd ~/proyecto` en la nueva ventana.
+
+Seguidamente se selecciona la otra ventana, y para finalizar se vincula el terminal a la sesión creada.
+
+Podría mejorarse el *script* para que no creara nada si la sesión ya existe (usando el comando `has-session`):
+
+```bash
+#!/bin/bash
+
+tmux has-session -t IDE 2>/dev/null
+
+if [ $? != 0 ]; then
+    tmux new-session -d -s IDE -n Edición -- vim main.c
+    tmux split-window -h -- vim main.h
+    tmux split-window -v
+    tmux select-pane -t 0
+    tmux new-window -n Consola
+    tmux send-keys 'cd ~/proyecto' Enter
+    tmux select-window -t Edición
+fi
+
+tmux attach-session -t IDE
+```
