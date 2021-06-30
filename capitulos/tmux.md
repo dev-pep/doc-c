@@ -194,7 +194,7 @@ Se puede cambiar el tamaño del panel activo (comando `resize-pane`):
 
 ## Configuración de *tmux*
 
-La configuración reside en el archivo ***~/.tmux.conf***.
+La configuración reside en el archivo ***~/.tmux.conf***. Son muchas las opciones configurables, aunque veremos solamente un ejemplo para cambiar el prefijo.
 
 ### Cambio de prefijo
 
@@ -206,7 +206,7 @@ unbind C-b
 bind C-a send-prefix
 ```
 
-### *Layouts* predefinidos
+## *Layouts* predefinidos
 
 Dado que los comandos *tmux* pueden ejecutarse desde fuera de la aplicación, crear un *layout* personalizado es muy sencillo, mediante un simple *shell script*. Un ejemplo:
 
