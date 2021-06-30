@@ -18,8 +18,8 @@ Otros:
 
 - [Compilador GCC](capitulos/gcc.md)
 - Depurador GDB
-- Construcción con Make
-- Desarrollar con Tmux
+- Make
+- [tmux](capitulos/tmux,md)
 
 ## Bibliografía
 
