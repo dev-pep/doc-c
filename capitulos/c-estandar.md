@@ -559,21 +559,21 @@ Los mismos principios de las constantes carácter en cuanto a formato valen para
 
 Los *strings* adyacentes con idéntico prefijo se concatenan durante el preproceso. Una serie de *strings* adyacentes en los que uno o más tienen un prefijo concreto (siempre el mismo) y los demás no tienen prefijo, se consideran todos con ese prefijo. No se puede concatenar de este modo *strings multibyte* con *strings wide*, con lo que no puede haber una secuencia con *strings wide* y *strings UTF-8*. En el caso de que existan prefijos *wide* distintos en los *strings*, la implementación decidirá qué hacer.
 
-Durante el preproceso también se añade al final de los literales *string* un *byte* o código *wide* de valor ***0***, y la secuencia resultante se usa para inicializar un *array* de *static storage duration* con la longitud justa para contener la secuencia. No se debe modificar el contenido de esas posiciones de memoria. Los literales *string* sin prefijo o *UTF-8* formarán secuencias `char` *multibyte* con la codificación correspondiente. Para literales *wide*, serán secuencias del tipo indicado por el prefijo.
-
-Nota sobre los literales *string*: el compilador reserva memoria para los literales *string* en una tabla de **constantes *string***. Por lo tanto, esto es incorrecto:
+Durante el preproceso también se añade al final de los literales *string* un *byte* o código *wide* de valor ***0***, y la secuencia resultante se usa para inicializar un *array* de *static storage duration* con la longitud justa para contener la secuencia. **No se debe modificar el contenido de esas posiciones de memoria**. Veamos un ejemplo:
 
 ```c
-char *s = "Un literal string";  // correcto; s apunta a la constante
-s[0] = `O`;  // incorrecto: no se puede cambiar esa zona de memoria
+char *s = "Un literal string";  // correcto
+s[0] = `O`;  // incorrecto: no se debe cambiar esa zona de memoria
 ```
 
-Lo correcto sería usar un *array*, ya que en ese caso sí se reserva una zona de memoria para el *string*:
+Lo correcto sería usar un *array*, ya que en ese caso el contenido del literal se copiará a la zona de memoria reservada para dicho *array*:
 
 ```c
 char s[] = "Un literal string";  // correcto; reservamos memoria para el string
 s[0] = `O`;  // correcto
 ```
+
+Los literales *string* sin prefijo o *UTF-8* formarán secuencias `char` *multibyte* con la codificación correspondiente. Para literales *wide*, serán secuencias del tipo indicado por el prefijo.
 
 #### 6.4.6 Punctuators
 
