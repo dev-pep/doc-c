@@ -561,6 +561,20 @@ Los *strings* adyacentes con idéntico prefijo se concatenan durante el preproce
 
 Durante el preproceso también se añade al final de los literales *string* un *byte* o código *wide* de valor ***0***, y la secuencia resultante se usa para inicializar un *array* de *static storage duration* con la longitud justa para contener la secuencia. No se debe modificar el contenido de esas posiciones de memoria. Los literales *string* sin prefijo o *UTF-8* formarán secuencias `char` *multibyte* con la codificación correspondiente. Para literales *wide*, serán secuencias del tipo indicado por el prefijo.
 
+Nota sobre los literales *string*: el compilador reserva memoria para los literales *string* en una tabla de **constantes *string***. Por lo tanto, esto es incorrecto:
+
+```c
+char *s = "Un literal string";  // correcto; s apunta a la constante
+s[0] = `O`;  // incorrecto: no se puede cambiar esa zona de memoria
+```
+
+Lo correcto sería usar un *array*, ya que en ese caso sí se reserva una zona de memoria para el *string*:
+
+```c
+char s[] = "Un literal string";  // correcto; reservamos memoria para el string
+s[0] = `O`;  // correcto
+```
+
 #### 6.4.6 Punctuators
 
 Operadores y *tokens* de preproceso. Se incluyen los *digraphs*, que equivalen al puntuador indicado:
