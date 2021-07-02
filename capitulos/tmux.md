@@ -48,13 +48,15 @@ Al crear una nueva sesión se puede indicar un comando que será ejecutado en es
 tmux new -s Editor "vim ~/proyecto/main.c"
 ```
 
-O equivalente:
+Si el comando no contiene espacios no es necesario entrecomillarlo.
+
+También se puede hacer así:
 
 ```
 tmux new -s Editor -- vim ~/proyecto/main.c
 ```
 
-Si el comando no contiene espacios no es necesario entrecomillarlo.
+Todo lo que tecleemos tras el doble guión (`--`) será considerado comando, con lo que no habrá que entrecomillarlo nunca, por más espacios y argumentos que contenga.
 
 Al crear una sesión, esta contiene una sola ventana, cuyo nombre se basa en lo que está ejecutando. Si queremos crear la sesión dando también nombre a la ventana inicial, usaremos el *flag* `-n` (de *name*).
 
@@ -69,7 +71,7 @@ Como siempre, no hace falta separar el *flag* del nombre con espacios, y si el n
 Aunque se puede configurar la información de la barra de estado, por defecto se muestra, de izquierda a derecha:
 
 - El nombre de la sesión *attached* entre corchetes (***\[\]***).
-- Los números de índice y nombres de las ventanas de la sesión. La ventana actual está marcada con asterisco (***\****), y la última ventana con guión (***-***).
+- Los números de índice y nombres de las ventanas de la sesión. La ventana actual está marcada con asterisco (***\****), y la última ventana activa (anterior a la actual) con guión (***-***).
 - El nombre del panel actual.
 - Hora y fecha.
 
@@ -185,7 +187,11 @@ Para matar una sesión se usa el comando `kill-session`.
 
 Estos comandos matan el elemento actual o activo si no se les especifica el *target* (`-t`).
 
-Una forma de cerrar un panel es terminando el proceso asociado al mismo. Por ejemplo, introduciendo `exit` (o pulsando `Ctrl-D`) desde un intérprete *bash*. Si el panel cerrado es el único existente en la ventana, se cierra la ventana. Y si esta ventana era la única de la sesión, se cierra la sesión.
+Una forma de cerrar un panel es terminando el proceso asociado al mismo. Por ejemplo, introduciendo `exit` (o pulsando `Ctrl-D`) desde un intérprete *bash*.
+
+Cuando un panel se cierra, si este era el único existente en la ventana, se cierra la ventana.
+
+Cuando una ventana se cierra, si esta era la única de la sesión, se cierra la sesión.
 
 ## Renombrar
 
@@ -199,6 +205,8 @@ Se puede cambiar el tamaño del panel activo (comando `resize-pane`):
 
 - `P C-<Arriba>`, `P C-<Abajo>`, `P C-<Izquierda>`, `P C-<Derecha>` cambia el tamaño en 1 unidad hacia la dirección indicada.
 - `P Alt-<Arriba>`, `P Alt-<Abajo>`, `P Alt-<Izquierda>`, `P Alt-<Derecha>` cambia el tamaño hacia la dirección indicada, en pasos más grandes.
+
+En estos casos, si tras el prefijo se presiona reiteradamente la tecla correspondiente y **sin pausa**, no hay que ir presionando el prefijo cada vez.
 
 ## Configuración de *tmux*
 
@@ -230,7 +238,7 @@ tmux select-window -t Edición
 tmux attach-session -t IDE
 ```
 
-La primera línea crea la sesión (y renombra la ventana), y lo hace en modo *detached*, puesto que de lo contrario entraría en *tmux* y no seguiría ejecutando comandos hasta que *tmux* retornase. El comando también da nombre a la ventana de la sesión, y le asocia el proceso `vim main.c`. Los comandos a continuación actuarán sobre esta sesión.
+La primera línea crea la sesión (y renombra la ventana), y lo hace en modo *detached*, puesto que de lo contrario entraría en *tmux* y no seguiría ejecutando comandos hasta que *tmux* retornase. El comando también da nombre a la ventana de la sesión, y le asocia el proceso `vim main.c`. Los comandos a continuación actuarán sobre esta sesión, hasta que se ejecute un nuevo comando `new-session`.
 
 A continuación crea un par de paneles más y selecciona el panel 0 como activo en esa ventana.
 
