@@ -208,6 +208,12 @@ Se puede cambiar el tamaño del panel activo (comando `resize-pane`):
 
 En estos casos, si tras el prefijo se presiona reiteradamente la tecla correspondiente y **sin pausa**, no hay que ir presionando el prefijo cada vez.
 
+## Modo histórico
+
+La salida que se produce en un panel se va perdiendo por arriba. En un terminal normal podríamos acceder a las salidas y los comandos tecleados con anterioridad utilizando, si el terminal está en una ventana de la *GUI*, la barra de *scroll* o la rueda del ratón, por ejemplo. Pero en *tmux* no es posible. Si se desea acceder al histórico de salidas, hay que entrar en el llamado *modo histórico*.
+
+Para entrar en dicho modo hay que presionar `P [`. Durante este modo podemos desplazarnos con el cursor usando las flechas, y las teclas de inicio, fin, página arriba o página abajo. Para salir del modo histórico se presiona simplemente `q`.
+
 ## Configuración de *tmux*
 
 La configuración reside en el archivo ***~/.tmux.conf***. Son muchas las opciones configurables, aunque veremos solamente un ejemplo para cambiar el prefijo.
