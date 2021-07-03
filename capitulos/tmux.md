@@ -164,7 +164,7 @@ Para cambiar la ventana actual se usa el comando `select-window`, aunque lo más
 
 Para cambiar el panel activo se usan los comandos `select-pane` y `display-panes`. Lo usual es utilizar los atajos de teclado:
 
-- `P <Arriba>`, `P <Abajo>`, `P <Izquierda>`, `P <Derecha>` cambia, cíclicamente, al panel que está en la dirección de la flecha presionada.
+- `P <Arriba>`, `P <Abajo>`, `P <Izquierda>`, `P <Derecha>` cambia, cíclicamente, al panel que está en la dirección de la flecha presionada. Si se presionan las flechas pertinentes repetidamente **y sin interrupción**, no es necesario ir presionando el prefijo cada vez.
 - `P q` muestra durante unos momentos los números de índice de los paneles (que dependen exclusivamente de su posición en pantalla). El número del panel actual se muestra en rojo. Si antes de que desaparezcan los números presionamos uno de ellos, se cambiará el panel activo al indicado.
 - `P o` va al siguiente panel (por número).
 - `P C-o` intercambia el panel activo con el siguiente (por número).
