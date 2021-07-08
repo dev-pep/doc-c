@@ -62,9 +62,9 @@ Existen un montón de opciones que habilitan tipos de *warnings* específicos (v
 
 Opciones para que *GCC* añada información de depuración (*debug*) en el archivo final.
 
-`-g` es la opción principal para ello. Se puede utilizar incluso con opciones de optimización, aunque se recomienda usar `-Og` en este caso.
+`-g` es la opción principal para ello. Se puede utilizar incluso con opciones de optimización: aunque se puede usar `-Og` en este caso, lo mejor es deshabilitar completamente las optimizaciones con `-O0`.
 
-Aunque el depurador *GDB* puede funcionar con la opción indicada, si va a ser ese el depurador que utilizaremos, es mejor utilizar `-ggdb`, ya que añade más posibilidades a la depuración con dicho programa.
+Si nuestra intención es utilizar específicamente el depurador *GDB*, es mejor utilizar el flag `-ggdb`, ya que añade más posibilidades a la depuración con dicho programa.
 
 ## Opciones que controlan la optimización
 
