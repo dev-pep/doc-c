@@ -18,7 +18,6 @@ Otros:
 
 - [Compilador GCC](capitulos/gcc.md)
 - [Depuración: GDB y Valgrind](capitulos/gdb.md)
-- Make
 - [tmux](capitulos/tmux.md)
 
 ## Bibliografía
