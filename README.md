@@ -17,7 +17,7 @@ Biblioteca estándar:
 Otros:
 
 - [Compilador GCC](capitulos/gcc.md)
-- Depurador GDB
+- [Depuración: GDB y Valgrind](capitulos/gdb.md)
 - Make
 - [tmux](capitulos/tmux.md)
 
