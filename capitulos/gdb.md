@@ -123,13 +123,13 @@ Sale de *GDB*. Equivale a pulsar ***Ctrl-D***.
 
 Este comando nos facilita ir hacia atrás en la ejecución (activa *reverse debugging*). Al compilador le falta información para hacerlo con éxito, estableciendo correctamente el estado anterior. Mediante este comando, todas las ejecuciones a partir de ese momento son registradas, de tal forma que se puede retroceder con seguridad, ya que guarda el camino exacto que describe la ejecución, así como el estado de todas las variables.
 
+Esto es muy útil cuando el programa se interrumpe, por un error que sucede aleatoriamente con poca frecuencia. Podemos tirar para atrás y ver el estado del programa.
+
 Para detener la grabación (y descartar toda la información):
 
 ```
 record stop
 ```
-
-Esto es muy útil cuando el programa se interrumpe, por un error que sucede aleatoriamente con poca frecuencia. Podemos tirar para atrás y ver el estado del programa.
 
 ### reverse-continue (rc)
 
