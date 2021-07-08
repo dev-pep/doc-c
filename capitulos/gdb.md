@@ -20,6 +20,12 @@ Los comandos pueden abreviarse a voluntad para ganar agilidad, a no ser que tal 
 
 Muestra el *call stack* entero (la última llamada se muestra arriba).
 
+Si queremos más información, incluyendo variables locales de cada función en el *stack*:
+
+```
+backtrace full
+```
+
 ### break
 
 Se utiliza para establecer *breakpoints*. Se puede indicar un número de línea, o incluso un nombre de función:
@@ -113,17 +119,29 @@ print i+j
 
 Sale de *GDB*. Equivale a pulsar ***Ctrl-D***.
 
+### record
+
+Este comando nos facilita ir hacia atrás en la ejecución (activa *reverse debugging*). Al compilador le falta información para hacerlo con éxito, estableciendo correctamente el estado anterior. Mediante este comando, todas las ejecuciones a partir de ese momento son registradas, de tal forma que se puede retroceder con seguridad, ya que guarda el camino exacto que describe la ejecución, así como el estado de todas las variables.
+
+Para detener la grabación (y descartar toda la información):
+
+```
+record stop
+```
+
+Esto es muy útil cuando el programa se interrumpe, por un error que sucede aleatoriamente con poca frecuencia. Podemos tirar para atrás y ver el estado del programa.
+
 ### reverse-continue (rc)
 
-Para retomar la ejecución **hacia atrás**, al contrario que `continue`. Véase `target record-full`.
+Para retomar la ejecución **hacia atrás**, al contrario que `continue`. Véase `record`.
 
 ### reverse-next (rn)
 
-Para retroceder un paso en la ejecución, al contrario que `next`. Véase `target record-full`.
+Para retroceder un paso en la ejecución, al contrario que `next`. Véase `record`.
 
 ### reverse-step (rs)
 
-Para retroceder un paso en la ejecución, al contrario que `step`. Véase `target record-full`.
+Para retroceder un paso en la ejecución, al contrario que `step`. Véase `record`.
 
 ### run
 
@@ -153,14 +171,6 @@ Avanza una línea en la ejecución, pero al contrario que `next`, si es una llam
 
 Al igual que con `next`, un argumento define la cantidad de pasos a realizar (a no ser que haya un punto de interrupción en medio).
 
-### target record-full
-
-Este comando nos facilita ir hacia atrás en la ejecución. Al compilador le falta información para hacerlo con éxito, estableciendo correctamente el estado anterior. Mediante este comando, todas las ejecuciones a partir de ese momento son registradas, de tal forma que se puede retroceder con seguridad, ya que guarda el camino exacto que describe la ejecución, así como el estado de todas las variables.
-
-```
-target record-full
-```
-
 ### undisplay
 
 Para dejar de mostrar una variable determinada. Se le debe pasar como parámetro el *ID* (número) del *display* correspondiente. Sin argumentos elimina todos los *displays*.
@@ -189,6 +199,12 @@ Muestra el tipo de una variable.
 ```
 whatis i
 ```
+
+## Varios
+
+Cuando el programa queda bloqueado en un bucle infinito, al pulsar ***Ctrl-C*** se interrumpirá y tendremos el contador de programa en la próxima orden a ejecutar.
+
+Con el comando `layout next` accedemos a la *text user interface*, con más *feedback* visual. Aunque tiene algunos problemas, como por ejemplo, que las flechas arriba y abajo ya no recuperan comandos antiguos tecleados, sino que desplazan el código fuente arriba y abajo. Esto se puede solucionar fácilmente, dado que obtenemos esta funcionalidad mediante ***Ctrl-P*** y ***Ctrl-N***. Por otro lado, en ocasiones el *layout* se desorganiza y se muestra incorrectamente; se soluciona ejecutando el comando `refresh`.
 
 # Bonus: errores de memoria (*Valgrind*)
 
