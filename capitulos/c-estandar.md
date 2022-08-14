@@ -1,4 +1,4 @@
-# C - estándar
+# Estándar
 
 *C* es un lenguaje **compilado**, procedural y estructurado. Desde su nacimiento en 1972 ha visto distintas versiones y mejoras. Es un potente lenguaje que no pierde fuelle con el paso de los años. Gracias a su estructura simple y eficiente, muchos lenguajes basan su sintaxis en él: *Java*, *PHP*, *JavaScript*, *C++*, *C#*. Sin embargo, *C* mantiene su simplicidad sin perder potencia.
 

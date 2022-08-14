@@ -1,4 +1,4 @@
-# C - notas
+# Notas
 
 Este documento es una recopilación de aclaraciones sobre diversos aspectos del lenguaje *C* que quizá no queden demasiado claros, estén muy dispersos o no tengan suficiente cobertura en el estándar.
 
