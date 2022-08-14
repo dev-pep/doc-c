@@ -1,6 +1,6 @@
 # Apuntes de C
 
-La intención del presente texto es dar una explicación exhaustiva de los detalles más relevantes del lenguaje *C* (especificación *C17*). No se trata de un tutorial o de una guía paso a paso, sino más bien de un **resumen completo**, extraído del estándar oficial. Se han añadido aclaraciones y ampliaciones relevantes donde se ha estimado necesario. Sin embargo, **el contenido de estos apuntes es demasiado denso para un principiante sin conocimientos de programación**.
+La intención del presente texto es dar una explicación exhaustiva de los detalles más relevantes del lenguaje *C* (especificación *C17*). No se trata de un tutorial o de una guía paso a paso, sino más bien de un **resumen completo** del estándar oficial. Se han añadido aclaraciones y ampliaciones relevantes donde se ha estimado necesario. Sin embargo, **el contenido de estos apuntes es demasiado denso para un principiante sin conocimientos de programación**.
 
 Se incluye la descripción del lenguaje, y de componentes frecuentemente utilizados de la biblioteca estándar. Para finalizar, se da una breve explicación de algunas utilidades de *software libre* que facilitan la creación y depuración de programas en *C*.
 
