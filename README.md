@@ -28,7 +28,7 @@ Biblioteca estándar:
 - [stdio.h](capitulos/lib-stdio.md)
 - [stdlib.h](capitulos/lib-stdlib.md)
 
-Otros:
+Utilidades:
 
 - [Compilador GCC](capitulos/gcc.md)
 - [Depuración: GDB y Valgrind](capitulos/gdb.md)
