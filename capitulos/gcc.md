@@ -1,8 +1,8 @@
 # Compilador *GCC* para *C*
 
-De la documentación para la versión de *GCC* 10.2.
+Extraído de la documentación oficial de *GCC*.
 
-GCC realiza preproceso, compilado, ensamblado y enlazado.
+*GCC* realiza preproceso, compilado, ensamblado y enlazado.
 
 Las opciones de línea de comandos con una sola letra no se pueden unir en una sola: `gcc -v -d` no equivale a `gcc -vd`. Se pueden mezclar argumentos y opciones, sin importar el orden, excepto en circunstancias específicas (por ejemplo, usando `-L` varias veces, el orden de búsqueda se hará en el orden especificado; la posición de `-l` también es importante).
 

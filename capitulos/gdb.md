@@ -206,7 +206,7 @@ Cuando el programa queda bloqueado en un bucle infinito, al pulsar ***Ctrl-C*** 
 
 Con el comando `layout next` accedemos a la *text user interface*, con más *feedback* visual. Aunque tiene algunos problemas, como por ejemplo, que las flechas arriba y abajo ya no recuperan comandos antiguos tecleados, sino que desplazan el código fuente arriba y abajo. Esto se puede solucionar fácilmente, dado que obtenemos esta funcionalidad mediante ***Ctrl-P*** y ***Ctrl-N***. Por otro lado, en ocasiones el *layout* se desorganiza y se muestra incorrectamente; se soluciona ejecutando el comando `refresh`.
 
-# Bonus: errores de memoria (*Valgrind*)
+# Errores de memoria (*Valgrind*)
 
 En relación a la reserva de memoria dinámica (en el *heap*), existen dos tipos de errores de memoria:
 

@@ -1,6 +1,6 @@
 # tmux
 
-La aplicación *tmux* (*Terminal MUlTiplexer*) permite dividir la pantalla de un terminal *Unix*.
+La aplicación *tmux* (*Terminal MUlTiplexer*) permite dividir la pantalla de un terminal *Unix*. Ello permite organizar un terminal de texto de forma parecida a lo que haría una aplicación *IDE* para desarrollo, no solo en *C* sino en cualquier otro lenguaje. Combinado con otras herramientas como *Vim*, *GDB* o *GCC*, podemos configurar un entorno eficiente para el desarrollo de aplicaciones en *C*.
 
 *tmux* permite organizar sesiones, que contienen ventanas, las cuales contienen paneles. Todas las acciones de *tmux* tienen asociadas un **comando *tmux***. Hay varias formas de ejecutar un comando *tmux*:
 

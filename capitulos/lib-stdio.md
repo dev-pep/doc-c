@@ -1,6 +1,10 @@
 # 7.21 Input/output \<stdio.h>
 
+(Entrada/salida \<stdio.h>.)
+
 ## 7.21.1 Introduction
+
+(Introducción.)
 
 Este *header* define 3 tipos:
 
@@ -25,6 +29,8 @@ El *header* ***wchar.h*** declara funciones con operaciones análogas a la mayor
 
 ## 7.21.2 Streams
 
+(Flujos.)
+
 La entrada/salida (terminales, cintas, discos,...) se realiza sobre *streams*. Hay 2 tipos: de texto y binarios.
 
 Los *streams* de texto se componen de líneas, terminadas en *newline* (implementación puede decidir que en la última línea no hace falta *newline*). Un *stream* binario permite almacenar datos internos, y puede contener un número *implementation-defined* de caracteres *trailing* nulos.
@@ -36,6 +42,8 @@ Los *streams* tienen un *lock* de tal modo que solo un *thread* tiene el *lock* 
 La implementacion debe soportar archivos de texto con líneas de al menos 254 caracteres, incluyendo el *newline*. ***BUFSIZ*** debe ser al menos 256.
 
 ## 7.21.3 Files
+
+(Archivos.)
 
 Un *stream* se asocia a un fichero externo. Si un *stream* no tiene un *buffer* asociado (es *unbuffered*), cada carácter escrito/leído lo hace cuanto antes. De lo contrario, se pueden escribir/leer físicamente bloque a bloque. Con un archivo *fully buffered*, los bloques se escriben/leen al llenarse el *buffer*; si es *line buffered*, el bloque se escribe/lee al encontrar un *newline*.
 
@@ -54,19 +62,29 @@ Los *text* y *binary wide-oriented streams* son secuencias de *wide chars*, y lo
 
 ## 7.21.4 Operations on files
 
-`int remove(const char *filename)`
+(Operaciones sobre archivos.)
+
+```c
+int remove(const char *filename)
+```
 
 Elimina el archivo. Retorna cero si tiene éxito, y otro número si falla. Si el fichero está abierto, el comportamiento es *implementation-defined*.
 
-`int rename(const char *old, const char *new)`
+```c
+int rename(const char *old, const char *new)
+```
 
 Renombra el fichero de ***old*** a ***new***. Si el fichero ***new*** ya existe, el comportamiento es *implementation-defined*. Retorna cero si tiene éxito, y *nonzero* si falla.
 
-`FILE *tmpfile(void)`
+```c
+FILE *tmpfile(void)
+```
 
 Crea un archivo temporal en modo ***wb+***, diferente de todos los abiertos; se elimina automaticamente al cerrarse o al terminar el programa. Retorna un apuntador al *stream*, o ***NULL*** si falla.
 
-`char *tmpnam(char *s)`
+```c
+char *tmpnam(char *s)
+```
 
 Genera un nombre de archivo distinto al de todos los archivos abiertos y lo almacena en la dirección apuntada por ***s***. La función es capaz de generar como mínimo ***TMP_MAX*** *strings* distintos. Si se crea un archivo con ese nombre, el archivo deberá eliminarse (`remove()`) cuando acabemos de usarlo. La función genera un *string* distinto cada vez (hasta ***TMP_MAX*** veces garantizado).
 
@@ -74,15 +92,24 @@ Devuelve ***NULL*** si no puede generar un nombre; de lo contrario, devuelve el 
 
 ## 7.21.5 File access functions
 
-`int fclose(FILE *stream)`
+(Funciones de acceso a archivos.)
+
+```c
+int fclose(FILE *stream)
+```
 
 Cierra el archivo, lo disocia del *stream* y *flushes* el *stream* (escribe todos los datos de salida pendientes, y desecha datos de entrada pendiente). Retorna 0 si tiene éxito y ***EOF*** si falla.
 
-`int fflush(FILE *stream)`
+```c
+int fflush(FILE *stream)
+```
 
 Hace *flush* del *stream* de salida, o actualiza (entrada + salida) *streams* donde la última operación no fue de entrada. Si ***stream*** es un apuntador nulo, realiza la operación en todos los *streams* abiertos de las características mencionadas. Retorna 0 si tiene éxito o ***EOF*** si falla (y establece el indicador de error para el *stream*).
 
-`FILE *fopen(const char * restrict filename, const char * restrict mode)`
+```c
+FILE *fopen(const char * restrict filename,
+            const char * restrict mode)
+```
 
 Abre el archivo ***filename*** y le asocia un *stream*. Modos: ***r*** (archivo de texto de solo lectura), ***w*** (trunca a longitud ***0*** o crea un archivo de texto; solo escritura), ***wx*** (crea un archivo de texto para escritura), ***a*** (*append*; abre o crea un archivo de texto para escribir en el final del archivo). Es igual para modos binarios: ***rb***, ***wb***, ***wbx***, ***ab***. También igual para modos *update* (lectura + escritura): ***r+*** (lectura/escritura de archivo de texto), ***w+***
 (trunca a ***0*** o crea archivo de texto para lectura/escritura), ***a+*** (*append*; abre o crea archivo de texto para *update*, aunque las escrituras son al final del archivo). Modos *update* binarios: ***r+b***, ***w+b***, ***w+bx***, ***a+b***; o ***rb+***, ***wb+***, ***wb+x***, ***ab+***.
@@ -95,23 +122,37 @@ Al abrirse, un *stream* es *fully buffered* si y solo si se puede determinar que
 
 `fopen()` retorna una apuntador al objeto controlador del *stream*, o un apuntador nulo si falla.
 
-`FILE *freopen(const char * restrict filename, const char * restrict mode, FILE * restrict stream)`
+```c
+FILE *freopen(const char * restrict filename,
+              const char * restrict mode,
+              FILE * restrict stream)
+```
 
 Abre el archivo ***filename*** y lo asocia al *stream* ***stream***, usando el modo ***mode***. Si ***filename*** es un apuntador nulo, simplemente cambiará el modo del *stream* (los cambios de modo permitidos son *implementation-defined*). `freopen()` intenta antes de nada cerrar cualquier fichero que estuviera asociado a ***stream***, pero ignorará posibles errores en este punto. Los indicadores de error y *end of file* son limpiados. Devuelve ***stream*** si tiene éxito, o un apuntador nulo si falla.
 
-`void setbuf(FILE * restrict stream, char * restrict buf)`
+```c
+void setbuf(FILE * restrict stream, char * restrict buf)
+```
 
 Exceptuando que no retorna nada, equivale a `setvbuf()` con ***mode*** igual a ***\_IOFBF*** y ***size*** igual a ***BUFSIZ***, o si ***buf*** es un apuntador nulo, con ***mode*** igual a ***\_IONBF***.
 
-`int setvbuf(FILE * restrict stream, char * restrict buf, int mode, size_t size)`
+```c
+int setvbuf(FILE * restrict stream, char * restrict buf,
+            int mode, size_t size)
+```
 
 Debe ser la primera operación después de asociar ***stream*** a un archivo (excepto alguna llamada anterior sin éxito a `setvbuf()`). ***mode*** define el tipo de *buffer* para el *stream*: ***\_\_IOFBF*** (*fully buffered*), ***\_\_IOLBF*** (*line buffered*), o ***\_IONBF*** (*unbuffered*). Si ***buf*** es un apuntador nulo, el *buffer* lo reservará la misma función; en cualquier caso, ***size*** marca el tamaño deseado para el *buffer*. Devuelve *nonzero* si hay error, o cero si tiene éxito.
 
 ## 7.21.6 Formatted input/output functions
 
+(Funciones de entrada/salida con formato.)
+
 Todas estas funciones se comportan como si hubiera un *sequence point* después de las acciones asociadas a cada especificador de conversión.
 
-`int fprintf(FILE * restrict stream, const char * restrict format,...)`
+```c
+int fprintf(FILE * restrict stream,
+            const char * restrict format,...)
+```
 
 Escribe en ***stream***; ***format*** especifica cómo deben ser convertidos los subsiguientes argumentos. Si sobran argumentos, son evaluados e ignorados; si faltan, *undefined behaviour*. La función retorna al llegar al final de la *format string*.
 
@@ -165,7 +206,10 @@ Una anchura pequeña no trunca el campo; solo sirve para ampliarlo.
 
 La función `fprintf()` devuelve el número de caracteres escritos o un número negativo si hay error.
 
-`int fscanf(FILE * restrict stream, const char * restrict format,...)`
+```c
+int fscanf(FILE * restrict stream,
+           const char * restrict format,...)
+```
 
 Lee del *stream* definido por ***stream***. ***format*** marca las secuencias de entrada admisibles y como se irán convirtiendo para asignación a los apuntadores que forman el resto de argumentos.
 
@@ -213,145 +257,230 @@ Especificadores de conversión:
 
 `fscanf()` retorna el valor de la macro ***EOF*** si hay fallo en la entrada antes de que se produzca la primera conversión, de lo contrario retorna el número de asignaciones realizadas.
 
-`int printf(const char * restrict format,...)`
+```c
+int printf(const char * restrict format,...)
+```
 
 Es equivalente a `fprintf()`, pero enviando la salida a ***stdout***.
 
-`int scanf(const char * restrict format,...)`
+```c
+int scanf(const char * restrict format,...)
+```
 
 Es equivalente a `fscanf()` pero lee de ***stdin***.
 
-`int snprintf(char * restrict s, size_t n, const char * restrict format,...)`
+```c
+int snprintf(char * restrict s, size_t n,
+             const char * restrict format,...)
+```
 
 Es equivalente a `fprintf()`, pero escribiendo en el *array* ***s*** hasta ***n - 1*** caracteres; al final escribe un carácter nulo. Si ***n*** es ***0***, no se escribe nada (y ***s*** puede ser ***NULL***). Retorna la cantidad de caracteres que se habrían escrito si ***n*** hubiera tenido el tamaño necesario (sin contar el *null character* final), o un número negativo si hay error de codificación.
 
-`int sprintf(char * restrict s, const char * restrict format,...)`
+```c
+int sprintf(char * restrict s,
+            const char * restrict format,...)
+```
 
 Es equivalente a `snprintf()`, pero sin especificar tamaño del *array* ***s***.
 
-`int sscanf(const char * restrict s, const char * restrict format,...)`
+```c
+int sscanf(const char * restrict s,
+           const char * restrict format,...)
+```
 
 Es equivalente a `fscanf()` pero lee del *string* ***s***. Llegar al final del *string* es equivalente al *end-of-file* del *stream* en `fscanf()`.
 
-`int vfprintf(FILE * restrict stream, const char * restrict format, va_list arg)`
+```c
+int vfprintf(FILE * restrict stream,
+             const char * restrict format, va_list arg)
+```
 
 Es equivalente a `fprintf()`, pero se cambia la lista variable de parámetros por ***arg***, que deberemos haber inicializado con la macro ***va_start***. `vfprintf()` no invoca ***va_end***. Necesita el *header* ***stdarg.h***.
 
-`int vfscanf(FILE * restrict stream, const char * restrict format, va_list arg)`
+```c
+int vfscanf(FILE * restrict stream,
+            const char * restrict format, va_list arg)
+```
 
 Es equivalente a `fscanf()`, pero se cambia la lista variable de parámetros por ***arg***, que deberemos haber inicializado con la macro ***va_start***. `vfscanf()` no invoca ***va_end***. Necesita el *header* ***stdarg.h***.
 
-`int vprintf(const char * restrict format, va_list arg)`
+```c
+int vprintf(const char * restrict format, va_list arg)
+```
 
 Es equivalente a `printf()`, pero se cambia la lista variable de parámetros por ***arg***, que deberemos haber inicializado con la macro ***va_start***. `vprintf()` no invoca ***va_end***. Necesita el *header* ***stdarg.h***.
 
-`int vscanf(const char * restrict format, va_list arg)`
+```c
+int vscanf(const char * restrict format, va_list arg)
+```
 
 Es
 equivalente a `scanf()`, pero se cambia la lista variable de parámetros por ***arg***, que deberemos haber inicializado con la macro ***va_start***. `vscanf()` no invoca ***va_end***. Necesita el *header* ***stdarg.h***.
 
-`int vsnprintf(char * restrict s, size_t n, const char * restrict format, va_list arg)`
+```c
+int vsnprintf(char * restrict s, size_t n,
+              const char * restrict format, va_list arg)
+```
 
 Es equivalente a `snprintf()`, pero se cambia la lista variable de parámetros por ***arg***, que deberemos haber inicializado con la macro ***va_start***. `vsnprintf()` no invoca ***va_end***. Necesita el *header* ***stdarg.h***.
 
-`int vsprintf(char * restrict s, const char * restrict format, va_list arg)`
+```c
+int vsprintf(char * restrict s,
+             const char * restrict format, va_list arg)
+```
 
 Es equivalente a `sprintf()`, pero se cambia la lista variable de parámetros por ***arg***, que deberemos haber inicializado con la macro ***va_start***. `vsprintf()` no invoca ***va_end***. Necesita el *header* ***stdarg.h***.
 
-`int vsscanf(const char * restrict s, const char * restrict format, va_list arg)`
+```c
+int vsscanf(const char * restrict s,
+            const char * restrict format, va_list arg)
+```
 
 Es equivalente a `sscanf()`, pero se cambia la lista variable de parámetros por ***arg***, que deberemos haber inicializado con la macro ***va_start***. `sscanf()` no invoca ***va_end***. Necesita el *header* ***stdarg.h***.
 
 ## 7.21.7 Character input/output functions
 
-`int fgetc(FILE *stream)`
+(Funciones de entrada/salida de caracteres.)
+
+```c
+int fgetc(FILE *stream)
+```
 
 Lee el siguiente carácter del *stream* como `unsigned char`, y lo retorna convertido a `int`, siempre que haya carácter disponible y el indicador de *end-of-file* para el *stream* no esté activado. Si hay error de lectura (activa el indicador de error del *stream*), *end-of-file* está activado, o llegamos al fin del archivo, retorna ***EOF***.
 
-`char *fgets(char * restrict s, int n, FILE * restrict stream)`
+```c
+char *fgets(char * restrict s, int n,
+            FILE * restrict stream)
+```
 
 Lee un maximo de ***n - 1*** caracteres de ***stream*** y los escribe en ***s***. No se escriben más caracteres después de un *end of file* ni después de un *newline* (que se copia). Al final coloca un null character. Si tiene éxito retorna ***s***; si llega el *end of file* y no se ha leído ningún carácter, ***s*** queda sin cambio y retorna ***NULL***. Si hay error de lectura, retorna ***NULL***.
 
-`int fputc(int c, FILE *stream)`
+```c
+int fputc(int c, FILE *stream)
+```
 
 Escribe el carácter ***c*** convertido a `unsigned char` al ***stream***. Si tiene éxito retorna el carácter y avanza el puntero del *stream*. En caso de error, activa el indicador de error del *stream* y retorna ***EOF***.
 
-`int fputs(const char * restrict s, FILE * restrict stream)`
+```c
+int fputs(const char * restrict s, FILE * restrict stream)
+```
 
 Escribe el *string* ***s*** al ***stream***. El *null terminator* no se escribe. Retorna un número no negativo si tiene éxito; ***EOF*** si no.
 
-`int getc(FILE *stream)`
+```c
+int getc(FILE *stream)
+```
 
 Es igual que `fgetc()`, pero implementado como macro. Puede evaluar ***stream*** más de una vez, con lo que es mejor que el argumento no sea una expresión con *side effects*.
 
-`int getchar(void)`
+```c
+int getchar(void)
+```
 
 Es como `getc()`, con ***stdin*** como *stream* entrada.
 
-`int putc(int c, FILE *stream)`
+```c
+int putc(int c, FILE *stream)
+```
 
 Es igual que `fputc()`, pero implementado como macro. Puede evaluar ***stream*** más de una vez, con lo que es mejor que el argumento no sea una expresión con *side effects*.
 
-`int putchar(int c)`
+```c
+int putchar(int c)
+```
 
 Es como `putc()`, con ***stdout*** como *stream* de salida.
 
-`int puts(const char *s)`
+```c
+int puts(const char *s)
+```
 
 Escribe el *string* ***s*** + un *newline* en ***stdout***. No escribe el *null terminator*. Retorna un número no negativo si tiene éxito; de lo contrario, ***EOF***.
 
-`int ungetc(int c, FILE *stream)`
+```c
+int ungetc(int c, FILE *stream)
+```
 
 Empuja (*pushes*) el carácter ***c*** convertido a `unsigned char` al *stream*. Los caracteres *pushed* leídos del *stream* se recuperan en orden inverso al que fueron *pushed* (como una pila). Una llamada exitosa a una función de reposicionamiento del puntero del *stream* descarta los últimos *pushed-back characters* sin leer. Se garantiza 1 *pushback* al *stream*, pero si se hacen demasiados `ungetc()` seguidos sin una sola operación de lectura o reposicionamiento, puede fallar. Si intentamos *unread* el carácter ***EOF***, la operación falla y no hace nada. Al descartar o leer todos los caracteres *pushed* en un *stream*, el indicador de posicion del *stream* recupera el mismo valor que tenía antes de *unread* el primero de esos caracteres. En caso de éxito, el indicador *end-of-file* del *stream* se borra. Retorna el carácter *pushed back*, o ***EOF*** si hay error.
 
 ## 7.21.8 Direct input/output functions
 
-`size_t fread(void * restrict ptr, size_t size, size_t nmemb, FILE * restrict stream)`
+(Funciones de entrada/salida directa.)
+
+```c
+size_t fread(void * restrict ptr, size_t size,
+             size_t nmemb, FILE * restrict stream)
+```
 
 Lee de ***stream*** hasta ***nmemb*** elementos (o hasta el *end of file*) de ***size*** *bytes* y los coloca *byte* a *byte* (`unsigned char`) en ***ptr***. El indicador de posición del *stream* es incrementado en el número de caracteres leídos correctamente. Si hay error o se lee un elemento parcialmente, el valor del indicador es indeterminado. La función devuelve el número de elementos leídos, que será menor a ***nmemb*** si hay *end of file* o error de lectura. Si ***nmemb*** o ***size*** son ***0***, la función no hace absolutamente nada y retorna ***0***.
 
-`size_t fwrite(const void * restrict ptr, size_t size, size_t nmemb, FILE * restrict stream)`
+```c
+size_t fwrite(const void * restrict ptr, size_t size,
+              size_t nmemb, FILE * restrict stream)
+```
 
 Escribe hasta ***nmemb*** elementos de ***size*** *bytes*, *byte* a *byte* (`unsigned char`), del *array* apuntado por ***ptr*** hacia ***stream***. El indicador de posición del *stream* avanza tantos *bytes* como se hayan escrito con éxito; si hay error, su valor es indeterminado. La función retorna el número de elementos escritos, que será menor a ***nmemb*** si hay error de escritura. Si ***nmemb*** o ***size*** son ***0***, la función no hace absolutamente nada y retorna ***0***.
 
 ## 7.21.9 File positioning functions
 
-`int fgetpos(FILE * restrict stream, fpos_t * restrict pos)`
+(Funciones de posicionamiento en archivo.)
+
+```c
+int fgetpos(FILE * restrict stream, fpos_t * restrict pos)
+```
 
 Lee el indicador de posición del *stream* y los valores de su *parse state* (si lo hay) y lo almacena en el objeto apuntado por ***pos***. Si tiene éxito, retorna ***0***; en caso de fallo, retorna *nonzero* y establece ***errno*** (***errno.h***) a un valor positivo *implementation-specific*.
 
-`int fseek(FILE *stream, long int offset, int whence)`
+```c
+int fseek(FILE *stream, long int offset, int whence)
+```
 
 Coloca el indicador de posición del *stream* binario en la posicion ***offset*** (caracteres), en relación a ***whence***, que puede ser ***SEEK_SET*** (principio del *stream*), ***SEEK_CUR*** (posición actual) o ***SEEK_END*** (final del *stream*). Si hay error, establece el indicador de error del *stream*. En *streams* de texto el funcionamiento se debería limitar a un ***offset*** de ***0***, o posiciones retornadas por `ftell()`, y usando siempre ***SEEK_SET*** para asegurarnos de un funcionamiento correcto. Una llamada exitosa a `fseek()` descarta los últimos caracteres *unread* (`ungetc()`), borra el indicador de *end-of-file* del *stream*, y establece la
 nueva posición. Solo retorna *nonzero* si hay error.
 
-`int fsetpos(FILE *stream, const fpos_t *pos)`
+```c
+int fsetpos(FILE *stream, const fpos_t *pos)
+```
 
 Establece el indicador de posición del *stream*, así como los valores de su *parse state* (objeto ***mbstate_t***, si lo hay), según especifique el objeto apuntado por ***pos*** (obtenido anteriormente con `fgetpos()` sobre el mismo fichero). Si es exitoso, descarta los últimos caracteres *unread* (`ungetc()`), borra el indicador *end-of-file* del *stream* y establece la nueva posición. Si tiene éxito, retorna ***0***; si hay fallo, retorna *nonzero* y establece ***errno*** a un valor positivo *implementation-specific*.
 
-`long int ftell(FILE *stream)`
+```c
+long int ftell(FILE *stream)
+```
 
 Lee el valor del indicador de posición del *stream* y retorna ese dato. Para archivos binarios, es el número de caracteres desde el principio del fichero. Para archivos de texto, el valor es inespecífico, aunque puede usarse en conjunción con `fseek()` para restaurar esa posición. Si hay error, establece ***errno*** a un valor positivo *implementation-specific*, y retorna ***-1L***.
 
-`void rewind(FILE *stream)`
+```c
+void rewind(FILE *stream)
+```
 
 Equivale a `(void)fseek(stream, 0L, SEEK_SET)`, con la diferencia de que también borra el indicador de error del *stream*. No retorna valor.
 
 ## 7.21.10 Error-handling functions
 
-`void clearerr(FILE *stream)`
+(Funciones de tratamiento de errores.)
+
+```c
+void clearerr(FILE *stream)
+```
 
 Borra los indicadores de error y *end-of-file* del *stream*. No retorna valor.
 
-`int feof(FILE *stream)`
+```c
+int feof(FILE *stream)
+```
 
 Retorna *nonzero* si y solo si el indicador de *end-of-file* del *stream* está activo (vale ***1***).
 
-`int ferror(FILE *stream)`
+```c
+int ferror(FILE *stream)
+```
 
 Retorna *nonzero* si y solo si el indicador de error del *stream* está activo (vale ***1***).
 
-`void perror(const char *s)`
+```c
+void perror(const char *s)
+```
 
 Escribe en ***stderr*** la secuencia de caracteres siguiente: primero el *string* ***s***, seguido por dos puntos (***:***) y un espacio; a continuación, el mensaje de error, como el que devolvería `strerror()` (***string.h***) con argumento ***errno*** y un *newline*. Si ***s*** es ***NULL*** o apunta a una cadena vacía, solo se
 escribe el mensaje de error con el *newline*. No devuelve valor.

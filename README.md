@@ -1,8 +1,22 @@
-# Apuntes de *C*
+# Apuntes de C
 
-Estos son mis apuntes de *C* (estándar *C18*).
+La intención del presente texto es dar una explicación exhaustiva de los detalles más relevantes del lenguaje *C* (especificación *C17*). No se trata de un tutorial o de una guía paso a paso, sino más bien de un **resumen completo**, extraído del estándar oficial. Se han añadido aclaraciones y ampliaciones relevantes donde se ha estimado necesario. Sin embargo, **el contenido de estos apuntes es demasiado denso para un principiante sin conocimientos de programación**.
 
-## Tabla de contenido
+Se incluye la descripción del lenguaje, y de componentes frecuentemente utilizados de la biblioteca estándar. Para finalizar, se da una breve explicación de algunas utilidades de *software libre* que facilitan la creación y depuración de programas en *C*.
+
+## Copias y actualizaciones
+
+Este trabajo está en permanente actualización.
+
+Para obtener una copia impresa, o un *ebook* de estos apuntes (podría no ser la versión más actual):
+
+[enlace pendiente]
+
+Puede acceder de forma gratuita a la versión más actualizada de esta obra, visitando el siguiente repositorio en *GitHub*:
+
+<https://github.com/dev-pep/doc-c>
+
+## Sumario
 
 Lenguaje:
 
@@ -20,19 +34,7 @@ Otros:
 - [Depuración: GDB y Valgrind](capitulos/gdb.md)
 - [tmux](capitulos/tmux.md)
 
-## Bibliografía
-
-- [N2176](n2176.pdf), último borrador antes de la aprobación del estándar *C18*.
-
 ---
 
-[![CC BY 4.0][cc-by-shield]][cc-by]
-
 Esta obra está bajo una
-[Licencia Creative Commons Atribución 4.0 Internacional][cc-by].
-
-[![CC BY 4.0][cc-by-image]][cc-by]
-
-[cc-by]: https://creativecommons.org/licenses/by/4.0/deed.es
-[cc-by-image]: https://i.creativecommons.org/l/by/4.0/88x31.png
-[cc-by-shield]: https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg
+[Licencia Creative Commons Atribución 4.0 Internacional](https://creativecommons.org/licenses/by/4.0/deed.es).
